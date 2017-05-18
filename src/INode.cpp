@@ -29,10 +29,7 @@
 */
 
 #include "INode.h"
-#include "../BaseLib.h"
 
-namespace BaseLib
-{
 namespace Flows
 {
 
@@ -59,7 +56,7 @@ void INode::unsuscribePeer(uint64_t peerId, int32_t channel, std::string variabl
 	if(_unsubscribePeer) _unsubscribePeer(_id, peerId, channel, variable);
 }
 
-void INode::output(uint32_t index, BaseLib::PVariable message)
+void INode::output(uint32_t index, PVariable message)
 {
 	if(_output) _output(_id, index, message);
 }
@@ -67,8 +64,7 @@ void INode::output(uint32_t index, BaseLib::PVariable message)
 PVariable INode::invoke(std::string methodName, PArray& parameters)
 {
 	if(_invoke) return _invoke(methodName, parameters);
-	return BaseLib::Variable::createError(-32500, "No callback method set.");
+	return Variable::createError(-32500, "No callback method set.");
 }
 
-}
 }

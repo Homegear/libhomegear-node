@@ -29,74 +29,13 @@
 */
 
 #include "Variable.h"
-#include "BaseLib.h"
+#include "HelperFunctions.h"
 
-namespace BaseLib
+namespace Flows
 {
-Variable::Variable(xml_node<>* node) : Variable()
-{
-	type = VariableType::tStruct;
-	parseXmlNode(node, structValue);
-}
-
-Variable::Variable(DeviceDescription::ILogical::Type::Enum variableType) : Variable()
-{
-	switch(variableType)
-	{
-		case DeviceDescription::ILogical::Type::Enum::none:
-			type = VariableType::tVoid;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tAction:
-			type = VariableType::tBoolean;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tArray:
-			type = VariableType::tArray;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tBoolean:
-			type = VariableType::tBoolean;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tEnum:
-			type = VariableType::tInteger;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tFloat:
-			type = VariableType::tFloat;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tInteger:
-			type = VariableType::tInteger;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tInteger64:
-			type = VariableType::tInteger64;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tString:
-			type = VariableType::tString;
-			break;
-		case DeviceDescription::ILogical::Type::Enum::tStruct:
-			type = VariableType::tStruct;
-			break;
-	}
-}
 
 Variable::~Variable()
 {
-}
-
-void Variable::parseXmlNode(xml_node<>* node, PStruct& xmlStruct)
-{
-	for(xml_attribute<>* attr = node->first_attribute(); attr; attr = attr->next_attribute())
-	{
-		xmlStruct->insert(std::pair<std::string, PVariable>(std::string(attr->name()), std::make_shared<Variable>(std::string(attr->value()))));
-	}
-	for(xml_node<>* subNode = node->first_node(); subNode; subNode = subNode->next_sibling())
-	{
-		if(subNode->first_node())
-		{
-			PVariable subStruct = std::make_shared<Variable>(VariableType::tStruct);
-			parseXmlNode(subNode, subStruct->structValue);
-			if(subStruct->structValue->size() == 1 && subStruct->structValue->begin()->first.empty()) xmlStruct->insert(std::pair<std::string, PVariable>(std::string(subNode->name()), subStruct->structValue->begin()->second));
-			else xmlStruct->insert(std::pair<std::string, PVariable>(std::string(subNode->name()), subStruct));
-		}
-		else xmlStruct->insert(std::pair<std::string, PVariable>(std::string(subNode->name()), std::make_shared<Variable>(std::string(subNode->value()))));
-	}
 }
 
 std::shared_ptr<Variable> Variable::createError(int32_t faultCode, std::string faultString)
@@ -417,85 +356,6 @@ std::string Variable::printStruct(PStruct tStruct, std::string indent, bool oneL
 	return result.str();
 }
 
-PVariable Variable::fromString(std::string& value, DeviceDescription::ILogical::Type::Enum type)
-{
-	VariableType variableType = VariableType::tVoid;
-	switch(type)
-	{
-	case DeviceDescription::ILogical::Type::Enum::none:
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tAction:
-		variableType = VariableType::tBoolean;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tBoolean:
-		variableType = VariableType::tBoolean;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tEnum:
-		variableType = VariableType::tInteger;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tFloat:
-		variableType = VariableType::tFloat;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tInteger:
-		variableType = VariableType::tInteger;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tInteger64:
-		variableType = VariableType::tInteger64;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tString:
-		variableType = VariableType::tString;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tArray:
-		variableType = VariableType::tArray;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tStruct:
-		variableType = VariableType::tStruct;
-		break;
-	}
-	return fromString(value, variableType);
-}
-
-PVariable Variable::fromString(std::string& value, DeviceDescription::IPhysical::Type::Enum type)
-{
-	VariableType variableType = VariableType::tVoid;
-	switch(type)
-	{
-	case DeviceDescription::IPhysical::Type::Enum::none:
-		break;
-	case DeviceDescription::IPhysical::Type::Enum::tBoolean:
-		variableType = VariableType::tBoolean;
-		break;
-	case DeviceDescription::IPhysical::Type::Enum::tInteger:
-		variableType = VariableType::tInteger;
-		break;
-	case DeviceDescription::IPhysical::Type::Enum::tString:
-		variableType = VariableType::tString;
-		break;
-	}
-	return fromString(value, variableType);
-}
-
-PVariable Variable::fromString(std::string& value, VariableType type)
-{
-	if(type == VariableType::tBoolean)
-	{
-		HelperFunctions::toLower(value);
-		if(value == "1" || value == "true") return std::make_shared<Variable>(true);
-		else return std::make_shared<Variable>(false);
-	}
-	else if(type == VariableType::tString) return std::make_shared<Variable>(value);
-	else if(type == VariableType::tInteger) return std::make_shared<Variable>(Math::getNumber(value));
-	else if(type == VariableType::tInteger64) return std::make_shared<Variable>(Math::getNumber64(value));
-	else if(type == VariableType::tFloat) return std::make_shared<Variable>(Math::getDouble(value));
-	else if(type == VariableType::tBase64)
-	{
-		std::shared_ptr<Variable> variable = std::make_shared<Variable>(VariableType::tBase64);
-		variable->stringValue = value;
-		return variable;
-	}
-	return createError(-1, "Type not supported.");
-}
-
 std::string Variable::toString()
 {
 	switch(type)
@@ -556,43 +416,6 @@ std::string Variable::getTypeString(VariableType type)
 		return "valuetype";
 	}
 	return "string";
-}
-
-void Variable::setType(DeviceDescription::ILogical::Type::Enum value)
-{
-	switch(value)
-	{
-	case DeviceDescription::ILogical::Type::Enum::none:
-		type = VariableType::tVoid;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tAction:
-		type = VariableType::tBoolean;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tArray:
-		type = VariableType::tArray;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tBoolean:
-		type = VariableType::tBoolean;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tEnum:
-		type = VariableType::tInteger;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tFloat:
-		type = VariableType::tFloat;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tInteger:
-		type = VariableType::tInteger;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tInteger64:
-		type = VariableType::tInteger64;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tString:
-		type = VariableType::tString;
-		break;
-	case DeviceDescription::ILogical::Type::Enum::tStruct:
-		type = VariableType::tStruct;
-		break;
-	}
 }
 
 }

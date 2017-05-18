@@ -31,16 +31,11 @@
 #ifndef INODE_H_
 #define INODE_H_
 
-#include "../Variable.h"
+#include "Variable.h"
 
 #include <atomic>
 #include <string>
 #include <memory>
-
-namespace BaseLib
-{
-
-class SharedObjects;
 
 namespace Flows
 {
@@ -59,18 +54,18 @@ public:
 	virtual bool start() { return true; }
 	virtual void stop() {}
 
-	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, BaseLib::PVariable value) {}
+	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 
 	void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
 	void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
-	void setOutput(std::function<void(std::string, uint32_t, BaseLib::PVariable)> value) { _output.swap(value); }
+	void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
 	void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
 
 	virtual PVariable input(PVariable message) { return PVariable(); }
 protected:
 	void suscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void unsuscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
-	void output(uint32_t index, BaseLib::PVariable message);
+	void output(uint32_t index, PVariable message);
 	PVariable invoke(std::string methodName, PArray& parameters);
 private:
 	std::atomic_bool _locked;
@@ -80,7 +75,7 @@ private:
 	std::string _id;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
-	std::function<void(std::string, uint32_t, BaseLib::PVariable)> _output;
+	std::function<void(std::string, uint32_t, PVariable)> _output;
 	std::function<PVariable(std::string, PArray&)> _invoke;
 
 	INode(const INode&) = delete;
@@ -89,6 +84,5 @@ private:
 
 typedef std::shared_ptr<INode> PINode;
 
-}
 }
 #endif

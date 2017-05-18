@@ -35,8 +35,6 @@
 
 #include <memory>
 
-namespace BaseLib
-{
 namespace Flows
 {
 
@@ -53,6 +51,5 @@ public:
 	virtual INode* createNode(std::string path, std::string name) = 0;
 };
 
-}
 }
 #endif

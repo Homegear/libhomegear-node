@@ -5,7 +5,7 @@ AC_PREREQ([2.69])
 AC_INIT(libhomegear-node, m4_esyscmd_s([./getVersion.sh]), sathya@laufers.net)
 AC_CONFIG_AUX_DIR(cfg)
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([src/BaseLib.h])
+AC_CONFIG_SRCDIR([src/NodeFactory.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 

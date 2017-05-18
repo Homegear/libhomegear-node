@@ -28,12 +28,8 @@
  * files in the program, then also delete it here.
 */
 
-#ifndef VARIABLE_H_
-#define VARIABLE_H_
-
-#include "Encoding/RapidXml/rapidxml.hpp"
-#include "DeviceDescription/Logical.h"
-#include "DeviceDescription/Physical.h"
+#ifndef NODEVARIABLE_H_
+#define NODEVARIABLE_H_
 
 #include <vector>
 #include <string>
@@ -42,9 +38,7 @@
 #include <map>
 #include <list>
 
-using namespace rapidxml;
-
-namespace BaseLib
+namespace Flows
 {
 
 enum class VariableType
@@ -92,7 +86,6 @@ public:
 	Variable() { type = VariableType::tVoid; arrayValue = PArray(new Array()); structValue = PStruct(new Struct()); }
 	Variable(Variable const& rhs);
 	Variable(VariableType variableType) : Variable() { type = variableType; if(type == VariableType::tVariant) type = VariableType::tVoid; }
-	Variable(DeviceDescription::ILogical::Type::Enum variableType);
 	Variable(uint8_t integer) : Variable() { type = VariableType::tInteger; integerValue = (int32_t)integer; }
 	Variable(int32_t integer) : Variable() { type = VariableType::tInteger; integerValue = integer; integerValue64 = integer; }
 	Variable(uint32_t integer) : Variable() { type = VariableType::tInteger; integerValue = (int32_t)integer; integerValue64 = integer; }
@@ -107,16 +100,11 @@ public:
 	Variable(PStruct structVal) : Variable() { type = VariableType::tStruct; structValue = structVal; }
 	Variable(std::vector<uint8_t>& binaryVal) : Variable() { type = VariableType::tBinary; binaryValue = binaryVal; }
 	Variable(std::vector<char>& binaryVal) : Variable() { type = VariableType::tBinary; binaryValue.clear(); binaryValue.insert(binaryValue.end(), binaryVal.begin(), binaryVal.end()); }
-	Variable(xml_node<>* node);
 	virtual ~Variable();
 	static PVariable createError(int32_t faultCode, std::string faultString);
 	std::string print(bool stdout = false, bool stderr = false, bool oneLine = false);
 	static std::string getTypeString(VariableType type);
 	void setType(VariableType value) { type = value; };
-	void setType(DeviceDescription::ILogical::Type::Enum value);
-	static PVariable fromString(std::string& value, DeviceDescription::ILogical::Type::Enum type);
-	static PVariable fromString(std::string& value, DeviceDescription::IPhysical::Type::Enum type);
-	static PVariable fromString(std::string& value, VariableType type);
 	std::string toString();
 	Variable& operator=(const Variable& rhs);
 	bool operator==(const Variable& rhs);
@@ -129,11 +117,6 @@ private:
 	std::string print(PVariable variable, std::string indent, bool oneLine);
 	std::string printStruct(PStruct rpcStruct, std::string indent, bool oneLine);
 	std::string printArray(PArray rpcArray, std::string indent, bool oneLine);
-
-	/**
-	 * Converts a XML node to a struct. Important: Multiple usage of the same name on the same level is not possible.
-	 */
-	void parseXmlNode(xml_node<>* node, PStruct& xmlStruct);
 };
 
 }

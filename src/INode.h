@@ -51,11 +51,12 @@ public:
 	std::string getId() { return _id; }
 	void setId(std::string value) { _id = value; }
 
-	virtual bool start() { return true; }
+	virtual bool start(PVariable info) { return true; }
 	virtual void stop() {}
 
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 
+	void setLog(std::function<void(std::string, int32_t, std::string)> value) { _log.swap(value); }
 	void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
 	void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
 	void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
@@ -63,8 +64,9 @@ public:
 
 	virtual PVariable input(PVariable message) { return PVariable(); }
 protected:
-	void suscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
-	void unsuscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
+	void log(int32_t logLevel, std::string message);
+	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
+	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void output(uint32_t index, PVariable message);
 	PVariable invoke(std::string methodName, PArray& parameters);
 private:
@@ -73,6 +75,7 @@ private:
 	std::string _path;
 	std::string _name;
 	std::string _id;
+	std::function<void(std::string, int32_t, std::string)> _log;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
 	std::function<void(std::string, uint32_t, PVariable)> _output;

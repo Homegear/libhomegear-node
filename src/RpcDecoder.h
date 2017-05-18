@@ -56,7 +56,7 @@ public:
 	virtual std::shared_ptr<Variable> decodeResponse(std::vector<uint8_t>& packet, uint32_t offset = 0);
 	virtual void decodeResponse(PVariable& variable, uint32_t offset = 0);
 private:
-	std::unique_ptr<BinaryDecoder> _decoder;
+	std::unique_ptr<Flows::BinaryDecoder> _decoder;
 
 	std::shared_ptr<Variable> decodeParameter(std::vector<char>& packet, uint32_t& position);
 	std::shared_ptr<Variable> decodeParameter(std::vector<uint8_t>& packet, uint32_t& position);

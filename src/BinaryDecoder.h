@@ -28,8 +28,8 @@
  * files in the program, then also delete it here.
 */
 
-#ifndef BINARYDECODER_H_
-#define BINARYDECODER_H_
+#ifndef FLOWSBINARYDECODER_H_
+#define FLOWSBINARYDECODER_H_
 
 #include <iostream>
 #include <memory>
@@ -90,5 +90,6 @@ private:
 	 */
 	void memcpyBigEndian(uint8_t* to, const uint8_t* from, const uint32_t& length);
 };
+
 }
 #endif

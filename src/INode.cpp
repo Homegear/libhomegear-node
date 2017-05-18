@@ -46,12 +46,17 @@ INode::~INode()
 {
 }
 
-void INode::suscribePeer(uint64_t peerId, int32_t channel, std::string variable)
+void INode::log(int32_t logLevel, std::string message)
+{
+	if(_log) _log(_id, logLevel, message);
+}
+
+void INode::subscribePeer(uint64_t peerId, int32_t channel, std::string variable)
 {
 	if(_subscribePeer) _subscribePeer(_id, peerId, channel, variable);
 }
 
-void INode::unsuscribePeer(uint64_t peerId, int32_t channel, std::string variable)
+void INode::unsubscribePeer(uint64_t peerId, int32_t channel, std::string variable)
 {
 	if(_unsubscribePeer) _unsubscribePeer(_id, peerId, channel, variable);
 }

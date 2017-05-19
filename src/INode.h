@@ -32,6 +32,7 @@
 #define INODE_H_
 
 #include "Variable.h"
+#include "NodeInfo.h"
 
 #include <atomic>
 #include <string>
@@ -62,7 +63,7 @@ public:
 	void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
 	void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
 
-	virtual void input(PVariable message) {}
+	virtual void input(PNodeInfo nodeInfo, PVariable message) {}
 protected:
 	void log(int32_t logLevel, std::string message);
 	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");

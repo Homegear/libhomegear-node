@@ -28,34 +28,48 @@
  * files in the program, then also delete it here.
 */
 
-#ifndef NODEINFO_H_
-#define NODEINFO_H_
-
-#include "Variable.h"
+#include "NodeInfo.h"
 
 namespace Flows
 {
 
-class NodeInfo
+PVariable NodeInfo::serialize()
 {
-public:
-	std::string id;
-	std::string type;
-	int32_t y = 0;
-	PVariable info;
-	std::vector<std::string> wiresIn;
-	std::map<std::string, int32_t> wiresInMap;
-	std::vector<std::vector<std::string>> wiresOut;
+	PVariable info = std::make_shared<Variable>(VariableType::tStruct);
+	info->structValue->emplace("id", std::make_shared<Variable>(id));
+	info->structValue->emplace("type", std::make_shared<Variable>(type));
+	info->structValue->emplace("y", std::make_shared<Variable>(y));
+	info->structValue->emplace("info", info);
 
-	NodeInfo() {}
-	virtual ~NodeInfo() {}
-	PVariable serialize();
-protected:
-};
+	PVariable array = std::make_shared<Variable>(VariableType::tArray);
+	array->arrayValue->reserve(wiresIn.size());
+	for(auto& wire : wiresIn)
+	{
+		array->arrayValue->push_back(std::make_shared<Variable>(wire));
+	}
+	info->structValue->emplace("wiresIn", array);
 
-typedef std::shared_ptr<NodeInfo> PNodeInfo;
+	PVariable structure = std::make_shared<Variable>(VariableType::tStruct);
+	for(auto& wire : wiresInMap)
+	{
+		structure->structValue->emplace(wire.first, std::make_shared<Variable>(wire.second));
+	}
+	info->structValue->emplace("wiresInMap", structure);
+
+	array = std::make_shared<Variable>(VariableType::tArray);
+	array->arrayValue->reserve(wiresOut.size());
+	for(auto& output : wiresOut)
+	{
+		PVariable innerArray = std::make_shared<Variable>(VariableType::tArray);
+		for(auto& wire : output)
+		{
+			innerArray->arrayValue->push_back(std::make_shared<Variable>(wire));
+		}
+		array->arrayValue->push_back(innerArray);
+	}
+	info->structValue->emplace("wiresOut", array);
+
+	return info;
+}
 
 }
-#endif
-
-

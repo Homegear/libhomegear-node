@@ -52,7 +52,7 @@ public:
 	std::string getId() { return _id; }
 	void setId(std::string value) { _id = value; }
 
-	virtual bool start(PVariable info) { return true; }
+	virtual bool start(PNodeInfo nodeInfo) { return true; }
 	virtual void stop() {}
 
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
@@ -65,6 +65,10 @@ public:
 
 	virtual void input(PNodeInfo nodeInfo, PVariable message) {}
 protected:
+	std::string _path;
+	std::string _name;
+	std::string _id;
+
 	void log(int32_t logLevel, std::string message);
 	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
@@ -73,9 +77,6 @@ protected:
 private:
 	std::atomic_bool _locked;
 	std::atomic_int _referenceCounter;
-	std::string _path;
-	std::string _name;
-	std::string _id;
 	std::function<void(std::string, int32_t, std::string)> _log;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;

@@ -39,7 +39,7 @@ PVariable NodeInfo::serialize()
 	info->structValue->emplace("id", std::make_shared<Variable>(id));
 	info->structValue->emplace("type", std::make_shared<Variable>(type));
 	info->structValue->emplace("y", std::make_shared<Variable>(y));
-	info->structValue->emplace("info", info);
+	info->structValue->emplace("info", this->info);
 
 	PVariable array = std::make_shared<Variable>(VariableType::tArray);
 	array->arrayValue->reserve(wiresIn.size());

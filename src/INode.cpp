@@ -33,13 +33,14 @@
 namespace Flows
 {
 
-INode::INode(std::string path, std::string name)
+INode::INode(std::string path, std::string name, const std::atomic_bool* nodeEventsEnabled)
 {
 	_referenceCounter = 0;
 
 	_locked = false;
 	_path = path;
 	_name = name;
+	_nodeEventsEnabled = nodeEventsEnabled;
 }
 
 INode::~INode()
@@ -70,6 +71,11 @@ PVariable INode::invoke(std::string methodName, PArray& parameters)
 {
 	if(_invoke) return _invoke(methodName, parameters);
 	return Variable::createError(-32500, "No callback method set.");
+}
+
+void INode::nodeEvent(std::string topic, PVariable& value)
+{
+	if(_nodeEvent && *_nodeEventsEnabled) _nodeEvent(_id, topic, value);
 }
 
 }

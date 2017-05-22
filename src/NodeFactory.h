@@ -48,7 +48,7 @@ public:
 	{
 	}
 
-	virtual INode* createNode(std::string path, std::string name) = 0;
+	virtual INode* createNode(std::string path, std::string name, const std::atomic_bool* nodeEventsEnabled) = 0;
 };
 
 }

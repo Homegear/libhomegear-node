@@ -44,7 +44,7 @@ namespace Flows
 class INode
 {
 public:
-	INode(std::string path, std::string name);
+	INode(std::string path, std::string name, const std::atomic_bool* nodeEventsEnabled);
 	virtual ~INode();
 
 	std::string getName() { return _name; }
@@ -56,24 +56,28 @@ public:
 	virtual void stop() {}
 
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
+	virtual void setNodeVariable(std::string& variable, PVariable& value) {}
 
 	void setLog(std::function<void(std::string, int32_t, std::string)> value) { _log.swap(value); }
 	void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
 	void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
 	void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
 	void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
+	void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
 
 	virtual void input(PNodeInfo nodeInfo, PVariable message) {}
 protected:
 	std::string _path;
 	std::string _name;
 	std::string _id;
+	const std::atomic_bool* _nodeEventsEnabled;
 
 	void log(int32_t logLevel, std::string message);
 	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void output(uint32_t index, PVariable message);
 	PVariable invoke(std::string methodName, PArray& parameters);
+	void nodeEvent(std::string topic, PVariable& value);
 private:
 	std::atomic_bool _locked;
 	std::atomic_int _referenceCounter;
@@ -82,6 +86,7 @@ private:
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
 	std::function<void(std::string, uint32_t, PVariable)> _output;
 	std::function<PVariable(std::string, PArray&)> _invoke;
+	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
 
 	INode(const INode&) = delete;
 	INode& operator=(const INode&) = delete;

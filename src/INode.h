@@ -67,7 +67,7 @@ public:
 	void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
 	void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
 
-	virtual void input(PNodeInfo nodeInfo, PVariable message) {}
+	virtual void input(PNodeInfo nodeInfo, uint32_t index, PVariable message) {}
 protected:
 	std::string _path;
 	std::string _name;
@@ -77,7 +77,7 @@ protected:
 	void log(int32_t logLevel, std::string message);
 	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
-	void output(uint32_t index, PVariable message);
+	void output(uint32_t outputIndex, PVariable message);
 	PVariable invoke(std::string methodName, PArray& parameters);
 	void nodeEvent(std::string topic, PVariable& value);
 private:

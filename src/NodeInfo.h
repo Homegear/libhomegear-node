@@ -36,16 +36,20 @@
 namespace Flows
 {
 
+struct Wire
+{
+	std::string id;
+	uint32_t port;
+};
+
 class NodeInfo
 {
 public:
 	std::string id;
 	std::string type;
-	int32_t y = 0;
 	PVariable info;
-	std::vector<std::string> wiresIn;
-	std::map<std::string, int32_t> wiresInMap;
-	std::vector<std::vector<std::string>> wiresOut;
+	std::vector<std::vector<Wire>> wiresIn;
+	std::vector<std::vector<Wire>> wiresOut;
 
 	NodeInfo() {}
 	virtual ~NodeInfo() {}

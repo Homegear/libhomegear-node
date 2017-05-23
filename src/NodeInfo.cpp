@@ -38,32 +38,31 @@ PVariable NodeInfo::serialize()
 	PVariable info = std::make_shared<Variable>(VariableType::tStruct);
 	info->structValue->emplace("id", std::make_shared<Variable>(id));
 	info->structValue->emplace("type", std::make_shared<Variable>(type));
-	info->structValue->emplace("y", std::make_shared<Variable>(y));
 	info->structValue->emplace("info", this->info);
 
 	PVariable array = std::make_shared<Variable>(VariableType::tArray);
 	array->arrayValue->reserve(wiresIn.size());
-	for(auto& wire : wiresIn)
+	for(auto& input : wiresIn)
 	{
-		array->arrayValue->push_back(std::make_shared<Variable>(wire));
+		PVariable innerArray = std::make_shared<Variable>(VariableType::tStruct);
+		for(auto& wire : input)
+		{
+			innerArray->structValue->emplace("id", std::make_shared<Variable>(wire.id));
+			innerArray->structValue->emplace("port", std::make_shared<Variable>(wire.port));
+		}
+		array->arrayValue->push_back(innerArray);
 	}
 	info->structValue->emplace("wiresIn", array);
-
-	PVariable structure = std::make_shared<Variable>(VariableType::tStruct);
-	for(auto& wire : wiresInMap)
-	{
-		structure->structValue->emplace(wire.first, std::make_shared<Variable>(wire.second));
-	}
-	info->structValue->emplace("wiresInMap", structure);
 
 	array = std::make_shared<Variable>(VariableType::tArray);
 	array->arrayValue->reserve(wiresOut.size());
 	for(auto& output : wiresOut)
 	{
-		PVariable innerArray = std::make_shared<Variable>(VariableType::tArray);
+		PVariable innerArray = std::make_shared<Variable>(VariableType::tStruct);
 		for(auto& wire : output)
 		{
-			innerArray->arrayValue->push_back(std::make_shared<Variable>(wire));
+			innerArray->structValue->emplace("id", std::make_shared<Variable>(wire.id));
+			innerArray->structValue->emplace("port", std::make_shared<Variable>(wire.port));
 		}
 		array->arrayValue->push_back(innerArray);
 	}

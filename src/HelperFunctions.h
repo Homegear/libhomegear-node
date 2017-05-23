@@ -36,6 +36,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <sstream>
+#include <chrono>
 
 namespace Flows
 {
@@ -183,6 +184,41 @@ public:
 	 * @return Returns the hex string of the integer.
 	 */
 	static std::string getHexString(int32_t number, int32_t width = -1);
+
+	/**
+	 * Gets the current unix time stamp in milliseconds.
+	 *
+	 * @see getTimeSeconds()
+	 * @see getTimeMicroseconds()
+	 * @return The current unix time stamp in milliseconds.
+	 */
+	static int64_t getTime();
+
+	/**
+	 * Gets the current unix time stamp in microseconds.
+	 *
+	 * @see getTimeSeconds()
+	 * @see getTime()
+	 * @return The current unix time stamp in microseconds.
+	 */
+	static int64_t getTimeMicroseconds();
+
+	/**
+	 * Gets the current unix time stamp in seconds.
+	 *
+	 * @see getTime()
+	 * @see getTimeMicroseconds()
+	 * @return The current unix time stamp in seconds.
+	 */
+	static int32_t getTimeSeconds();
+
+	/**
+	 * Gets the current time as a string like "08/27/14 14:13:53.471".
+	 *
+	 * @param time The unix time stamp in milliseconds to get the time string for. If "0" the current time is returned.
+	 * @return Returns a time string like "08/27/14 14:13:53.471".
+	 */
+	static std::string getTimeString(int64_t time = 0);
 };
 
 }

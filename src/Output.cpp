@@ -28,60 +28,64 @@
  * files in the program, then also delete it here.
 */
 
-#include "INode.h"
+#include "Output.h"
 
 namespace Flows
 {
 
-INode::INode(std::string path, std::string name, const std::atomic_bool* nodeEventsEnabled)
-{
-	_referenceCounter = 0;
+std::string Output::_nodeId;
+std::function<void(std::string, int32_t, std::string)>* Output::_log = nullptr;
 
-	_locked = false;
-	_path = path;
-	_name = name;
-	_nodeEventsEnabled = nodeEventsEnabled;
-}
-
-INode::~INode()
+Output::Output()
 {
 }
 
-void INode::setLog(std::function<void(std::string, int32_t, std::string)> value)
+Output::~Output()
 {
-	_log.swap(value);
-	Output::init(_id, &_log);
 }
 
-void INode::log(int32_t logLevel, std::string message)
+void Output::init(std::string& nodeId, std::function<void(std::string, int32_t, std::string)>* logMethod)
 {
-	if(_log) _log(_id, logLevel, message);
+	_nodeId = nodeId;
+	_log = logMethod;
 }
 
-void INode::subscribePeer(uint64_t peerId, int32_t channel, std::string variable)
+void Output::printEx(std::string file, uint32_t line, std::string function, std::string what)
 {
-	if(_subscribePeer) _subscribePeer(_id, peerId, channel, variable);
+	std::string error;
+	if(!what.empty()) error = "Error in file " + file + " line " + std::to_string(line) + " in function " + function + ": " + what;
+	else error = "Unknown error in file " + file + " line " + std::to_string(line) + " in function " + function + ".";
+	if(_log && *_log) (*_log)(_nodeId, 2, error);
 }
 
-void INode::unsubscribePeer(uint64_t peerId, int32_t channel, std::string variable)
+void Output::printCritical(std::string errorString, bool errorCallback)
 {
-	if(_unsubscribePeer) _unsubscribePeer(_id, peerId, channel, variable);
+	if(_log && *_log) (*_log)(_nodeId, 1, errorString);
 }
 
-void INode::output(uint32_t index, PVariable message)
+void Output::printError(std::string errorString)
 {
-	if(_output) _output(_id, index, message);
+	if(_log && *_log) (*_log)(_nodeId, 2, errorString);
 }
 
-PVariable INode::invoke(std::string methodName, PArray& parameters)
+void Output::printWarning(std::string errorString)
 {
-	if(_invoke) return _invoke(methodName, parameters);
-	return Variable::createError(-32500, "No callback method set.");
+	if(_log && *_log) (*_log)(_nodeId, 3, errorString);
 }
 
-void INode::nodeEvent(std::string topic, PVariable& value)
+void Output::printInfo(std::string message)
 {
-	if(_nodeEvent && *_nodeEventsEnabled) _nodeEvent(_id, topic, value);
+	if(_log && *_log) (*_log)(_nodeId, 4, message);
+}
+
+void Output::printDebug(std::string message, int32_t minDebugLevel)
+{
+	if(_log && *_log) (*_log)(_nodeId, 5, message);
+}
+
+void Output::printMessage(std::string message, int32_t minDebugLevel)
+{
+	if(_log && *_log) (*_log)(_nodeId, minDebugLevel, message);
 }
 
 }

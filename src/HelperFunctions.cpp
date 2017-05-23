@@ -124,4 +124,44 @@ std::string HelperFunctions::getHexString(int32_t number, int32_t width)
 	return stringstream.str();
 }
 
+int64_t HelperFunctions::getTime()
+{
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+int64_t HelperFunctions::getTimeMicroseconds()
+{
+	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+int32_t HelperFunctions::getTimeSeconds()
+{
+	int32_t time = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();;
+	if(time < 0) time = 0;
+	return time;
+}
+
+std::string HelperFunctions::getTimeString(int64_t time)
+{
+	const char timeFormat[] = "%x %X";
+	std::time_t t;
+	int32_t milliseconds;
+	if(time > 0)
+	{
+		t = std::time_t(time / 1000);
+		milliseconds = time % 1000;
+	}
+	else
+	{
+		const auto timePoint = std::chrono::system_clock::now();
+		t = std::chrono::system_clock::to_time_t(timePoint);
+		milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint.time_since_epoch()).count() % 1000;
+	}
+	char timeString[50];
+	strftime(&timeString[0], 50, &timeFormat[0], std::localtime(&t));
+	std::ostringstream timeStream;
+	timeStream << timeString << "." << std::setw(3) << std::setfill('0') << milliseconds;
+	return timeStream.str();
+}
+
 }

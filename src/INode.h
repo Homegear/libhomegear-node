@@ -33,6 +33,8 @@
 
 #include "Variable.h"
 #include "NodeInfo.h"
+#include "Output.h"
+#include "HelperFunctions.h"
 
 #include <atomic>
 #include <string>
@@ -58,7 +60,7 @@ public:
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 	virtual void setNodeVariable(std::string& variable, PVariable& value) {}
 
-	void setLog(std::function<void(std::string, int32_t, std::string)> value) { _log.swap(value); }
+	void setLog(std::function<void(std::string, int32_t, std::string)> value);
 	void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
 	void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
 	void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }

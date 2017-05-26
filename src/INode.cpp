@@ -79,6 +79,20 @@ PVariable INode::invoke(std::string methodName, PArray& parameters)
 	return Variable::createError(-32500, "No callback method set.");
 }
 
+PVariable INode::invokeLocal(std::string methodName, PArray& parameters)
+{
+	std::map<std::string, std::function<PVariable(PArray& parameters)>>::iterator localMethodIterator = _localRpcMethods.find(methodName);
+	if(localMethodIterator == _localRpcMethods.end())
+	{
+		Output::printError("Warning: RPC method not found: " + methodName);
+		PVariable error = Variable::createError(-32601, ": Requested method not found.");
+		return error;
+	}
+
+	PVariable result = localMethodIterator->second(parameters);
+	return result;
+}
+
 void INode::nodeEvent(std::string topic, PVariable& value)
 {
 	if(_nodeEvent && *_nodeEventsEnabled) _nodeEvent(_id, topic, value);

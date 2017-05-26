@@ -65,20 +65,32 @@ public:
 	void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
 	void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
 	void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
+	void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray&)> value) { _invokeNodeMethod.swap(value); }
 	void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
 
 	virtual void input(PNodeInfo nodeInfo, uint32_t index, PVariable message) {}
+
+	/*
+	 * Executes local RPC method
+	 */
+	PVariable invokeLocal(std::string methodName, PArray& parameters);
 protected:
 	std::string _path;
 	std::string _name;
 	std::string _id;
 	const std::atomic_bool* _nodeEventsEnabled;
 
+	/*
+	 * Stores RPC methods for inter-node communication (intended for configuration nodes)
+	 */
+	std::map<std::string, std::function<PVariable(PArray& parameters)>> _localRpcMethods;
+
 	void log(int32_t logLevel, std::string message);
 	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void output(uint32_t outputIndex, PVariable message);
 	PVariable invoke(std::string methodName, PArray& parameters);
+	PVariable invokeNodeMethod(std::string, std::string methodName, PArray& parameters);
 	void nodeEvent(std::string topic, PVariable& value);
 private:
 	std::atomic_bool _locked;
@@ -88,6 +100,7 @@ private:
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
 	std::function<void(std::string, uint32_t, PVariable)> _output;
 	std::function<PVariable(std::string, PArray&)> _invoke;
+	std::function<PVariable(std::string, std::string, PArray&)> _invokeNodeMethod;
 	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
 
 	INode(const INode&) = delete;

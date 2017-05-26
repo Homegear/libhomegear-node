@@ -57,6 +57,8 @@ public:
 	virtual bool start(PNodeInfo nodeInfo) { return true; }
 	virtual void stop() {}
 
+	virtual void configNodesStarted() {}
+
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 	virtual void setNodeVariable(std::string& variable, PVariable& value) {}
 
@@ -90,7 +92,7 @@ protected:
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void output(uint32_t outputIndex, PVariable message);
 	PVariable invoke(std::string methodName, PArray& parameters);
-	PVariable invokeNodeMethod(std::string, std::string methodName, PArray& parameters);
+	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray& parameters);
 	void nodeEvent(std::string topic, PVariable& value);
 private:
 	std::atomic_bool _locked;

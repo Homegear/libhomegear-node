@@ -35,6 +35,7 @@
 #include "NodeInfo.h"
 #include "Output.h"
 #include "HelperFunctions.h"
+#include "Math.h"
 
 #include <atomic>
 #include <string>
@@ -54,7 +55,8 @@ public:
 	std::string getId() { return _id; }
 	void setId(std::string value) { _id = value; }
 
-	virtual bool start(PNodeInfo nodeInfo) { return true; }
+	virtual bool init(PNodeInfo nodeInfo) { return true; };
+	virtual bool start() { return true; }
 	virtual void stop() {}
 
 	virtual void configNodesStarted() {}

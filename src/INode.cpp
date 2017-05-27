@@ -95,8 +95,7 @@ PVariable INode::invokeLocal(std::string methodName, PArray& parameters)
 		return error;
 	}
 
-	PVariable result = localMethodIterator->second(parameters);
-	return result;
+	return localMethodIterator->second(parameters);
 }
 
 void INode::nodeEvent(std::string topic, PVariable& value)

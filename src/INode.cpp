@@ -79,6 +79,12 @@ PVariable INode::invoke(std::string methodName, PArray& parameters)
 	return Variable::createError(-32500, "No callback method set.");
 }
 
+PVariable INode::invokeNodeMethod(std::string nodeId, std::string methodName, PArray& parameters)
+{
+	if(_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, parameters);
+	return Variable::createError(-32500, "No callback method set.");
+}
+
 PVariable INode::invokeLocal(std::string methodName, PArray& parameters)
 {
 	std::map<std::string, std::function<PVariable(PArray& parameters)>>::iterator localMethodIterator = _localRpcMethods.find(methodName);
@@ -96,6 +102,23 @@ PVariable INode::invokeLocal(std::string methodName, PArray& parameters)
 void INode::nodeEvent(std::string topic, PVariable& value)
 {
 	if(_nodeEvent && *_nodeEventsEnabled) _nodeEvent(_id, topic, value);
+}
+
+PVariable INode::getNodeData(std::string key)
+{
+	if(_getNodeData) return _getNodeData(_id, key);
+	return Variable::createError(-32500, "No callback method set.");
+}
+
+void INode::setNodeData(std::string key, PVariable value)
+{
+	if(_setNodeData) _setNodeData(_id, key, value);
+}
+
+PVariable INode::getConfigParameter(std::string nodeId, std::string name)
+{
+	if(_getConfigParameter) return _getConfigParameter(nodeId, name);
+	return Variable::createError(-32500, "No callback method set.");
 }
 
 }

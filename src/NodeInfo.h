@@ -46,6 +46,7 @@ class NodeInfo
 {
 public:
 	std::string id;
+	std::string nodeNamespace;
 	std::string type;
 	PVariable info;
 	std::vector<std::vector<Wire>> wiresIn;

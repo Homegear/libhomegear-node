@@ -62,6 +62,8 @@ public:
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 	virtual void setNodeVariable(std::string& variable, PVariable& value) {}
 
+	virtual PVariable getConfigParameterIncoming(std::string name) { return std::make_shared<Flows::Variable>(); }
+
 	void setLog(std::function<void(std::string, int32_t, std::string)> value);
 	void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
 	void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
@@ -69,6 +71,9 @@ public:
 	void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
 	void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray&)> value) { _invokeNodeMethod.swap(value); }
 	void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
+	void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
+	void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
+	void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
 
 	virtual void input(PNodeInfo nodeInfo, uint32_t index, PVariable message) {}
 
@@ -94,6 +99,9 @@ protected:
 	PVariable invoke(std::string methodName, PArray& parameters);
 	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray& parameters);
 	void nodeEvent(std::string topic, PVariable& value);
+	PVariable getNodeData(std::string key);
+	void setNodeData(std::string key, PVariable value);
+	PVariable getConfigParameter(std::string nodeId, std::string name);
 private:
 	std::atomic_bool _locked;
 	std::atomic_int _referenceCounter;
@@ -104,6 +112,9 @@ private:
 	std::function<PVariable(std::string, PArray&)> _invoke;
 	std::function<PVariable(std::string, std::string, PArray&)> _invokeNodeMethod;
 	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
+	std::function<PVariable(std::string, std::string)> _getNodeData;
+	std::function<void(std::string, std::string, PVariable)> _setNodeData;
+	std::function<PVariable(std::string, std::string)> _getConfigParameter;
 
 	INode(const INode&) = delete;
 	INode& operator=(const INode&) = delete;

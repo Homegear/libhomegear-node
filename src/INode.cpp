@@ -33,14 +33,14 @@
 namespace Flows
 {
 
-INode::INode(std::string path, std::string name, const std::atomic_bool* nodeEventsEnabled)
+INode::INode(std::string path, std::string name, const std::atomic_bool* frontendConnected)
 {
 	_referenceCounter = 0;
 
 	_locked = false;
 	_path = path;
 	_name = name;
-	_nodeEventsEnabled = nodeEventsEnabled;
+	_frontendConnected = frontendConnected;
 }
 
 INode::~INode()
@@ -100,7 +100,7 @@ PVariable INode::invokeLocal(std::string methodName, PArray& parameters)
 
 void INode::nodeEvent(std::string topic, PVariable& value)
 {
-	if(_nodeEvent && *_nodeEventsEnabled) _nodeEvent(_id, topic, value);
+	if(_nodeEvent) _nodeEvent(_id, topic, value);
 }
 
 PVariable INode::getNodeData(std::string key)

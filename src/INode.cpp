@@ -91,8 +91,7 @@ PVariable INode::invokeLocal(std::string methodName, PArray& parameters)
 	if(localMethodIterator == _localRpcMethods.end())
 	{
 		Output::printError("Warning: RPC method not found: " + methodName);
-		PVariable error = Variable::createError(-32601, ": Requested method not found.");
-		return error;
+		return Variable::createError(-32601, ": Requested method not found.");
 	}
 
 	return localMethodIterator->second(parameters);

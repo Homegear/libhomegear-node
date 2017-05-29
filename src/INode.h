@@ -82,7 +82,7 @@ public:
 	/*
 	 * Executes local RPC method
 	 */
-	PVariable invokeLocal(std::string methodName, PArray& parameters);
+	virtual PVariable invokeLocal(std::string methodName, PArray& parameters);
 protected:
 	std::string _path;
 	std::string _name;

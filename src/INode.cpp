@@ -33,18 +33,30 @@
 namespace Flows
 {
 
-INode::INode(std::string path, std::string name, const std::atomic_bool* frontendConnected)
+INode::INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected)
 {
 	_referenceCounter = 0;
 
 	_locked = false;
 	_path = path;
-	_name = name;
+	_namespace = nodeNamespace;
+	_type = type;
 	_frontendConnected = frontendConnected;
 }
 
 INode::~INode()
 {
+	//Function pointers need to be cleaned up before unloading the module
+	_log = std::function<void(std::string, int32_t, std::string)>();
+	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
+	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
+	_output = std::function<void(std::string, uint32_t, PVariable)>();
+	_invoke = std::function<PVariable(std::string, PArray&)>();
+	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray&)>();
+	_nodeEvent = std::function<void(std::string, std::string, PVariable)>();
+	_getNodeData = std::function<PVariable(std::string, std::string)>();
+	_setNodeData = std::function<void(std::string, std::string, PVariable)>();
+	_getConfigParameter = std::function<PVariable(std::string, std::string)>();
 }
 
 void INode::setLog(std::function<void(std::string, int32_t, std::string)> value)

@@ -47,10 +47,11 @@ namespace Flows
 class INode
 {
 public:
-	INode(std::string path, std::string name, const std::atomic_bool* frontendConnected);
+	INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected);
 	virtual ~INode();
 
-	std::string getName() { return _name; }
+	std::string getNamespace() { return _namespace; }
+	std::string getType() { return _type; }
 	std::string getPath() { return _path; }
 	std::string getId() { return _id; }
 	void setId(std::string value) { _id = value; }
@@ -85,7 +86,8 @@ public:
 	virtual PVariable invokeLocal(std::string methodName, PArray& parameters);
 protected:
 	std::string _path;
-	std::string _name;
+	std::string _namespace;
+	std::string _type;
 	std::string _id;
 	const std::atomic_bool* _frontendConnected;
 

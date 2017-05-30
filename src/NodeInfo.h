@@ -51,6 +51,7 @@ public:
 	PVariable info;
 	std::vector<std::vector<Wire>> wiresIn;
 	std::vector<std::vector<Wire>> wiresOut;
+	int64_t lastNodeEvent = 0;
 
 	NodeInfo() {}
 	virtual ~NodeInfo() {}

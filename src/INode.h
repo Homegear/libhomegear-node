@@ -73,6 +73,8 @@ public:
 
 	virtual void configNodesStarted() {}
 
+	virtual void startUpComplete() {}
+
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 	virtual void setNodeVariable(std::string& variable, PVariable& value) {}
 

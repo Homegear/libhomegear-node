@@ -38,6 +38,7 @@
 #include "Math.h"
 
 #include <atomic>
+#include <mutex>
 #include <string>
 #include <memory>
 
@@ -55,6 +56,7 @@ public:
 	std::string getPath() { return _path; }
 	std::string getId() { return _id; }
 	void setId(std::string value) { _id = value; }
+	std::mutex& getInputMutex() { return _inputMutex; }
 
 	virtual bool init(PNodeInfo nodeInfo) { return true; };
 	virtual bool start() { return true; }
@@ -118,6 +120,7 @@ protected:
 private:
 	std::atomic_bool _locked;
 	std::atomic_int _referenceCounter;
+	std::mutex _inputMutex;
 	std::function<void(std::string, int32_t, std::string)> _log;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;

@@ -58,7 +58,16 @@ public:
 
 	virtual bool init(PNodeInfo nodeInfo) { return true; };
 	virtual bool start() { return true; }
+
+	/*
+	 * Shouldn't block. Set variables causing threads to finish here. After stop() is called for all nodes, waitForStop() is called() where threads can be joined.
+	 */
 	virtual void stop() {}
+
+	/*
+	 * Wait here until everything is cleaned up. Keep the waiting as short as possible as this method is called serially and synchronouly for all nodes. Join threads here.
+	 */
+	virtual void waitForStop() {}
 
 	virtual void configNodesStarted() {}
 

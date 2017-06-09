@@ -38,6 +38,7 @@
 #include "Math.h"
 
 #include <atomic>
+#include <mutex>
 #include <string>
 #include <memory>
 
@@ -55,12 +56,24 @@ public:
 	std::string getPath() { return _path; }
 	std::string getId() { return _id; }
 	void setId(std::string value) { _id = value; }
+	std::mutex& getInputMutex() { return _inputMutex; }
 
 	virtual bool init(PNodeInfo nodeInfo) { return true; };
 	virtual bool start() { return true; }
+
+	/*
+	 * Shouldn't block. Set variables causing threads to finish here. After stop() is called for all nodes, waitForStop() is called() where threads can be joined.
+	 */
 	virtual void stop() {}
 
+	/*
+	 * Wait here until everything is cleaned up. Keep the waiting as short as possible as this method is called serially and synchronouly for all nodes. Join threads here.
+	 */
+	virtual void waitForStop() {}
+
 	virtual void configNodesStarted() {}
+
+	virtual void startUpComplete() {}
 
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 	virtual void setNodeVariable(std::string& variable, PVariable& value) {}
@@ -109,6 +122,7 @@ protected:
 private:
 	std::atomic_bool _locked;
 	std::atomic_int _referenceCounter;
+	std::mutex _inputMutex;
 	std::function<void(std::string, int32_t, std::string)> _log;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;

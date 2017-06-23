@@ -36,6 +36,7 @@
 #include "Output.h"
 #include "HelperFunctions.h"
 #include "Math.h"
+#include "IQueue.h"
 
 #include <atomic>
 #include <mutex>
@@ -45,7 +46,7 @@
 namespace Flows
 {
 
-class INode
+class INode : public IQueue
 {
 public:
 	INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected);
@@ -62,7 +63,7 @@ public:
 	virtual bool start() { return true; }
 
 	/*
-	 * Shouldn't block. Set variables causing threads to finish here. After stop() is called for all nodes, waitForStop() is called() where threads can be joined.
+	 * Mustn't block. Set variables causing threads to finish here. After stop() is called for all nodes, waitForStop() is called() where threads can be joined.
 	 */
 	virtual void stop() {}
 
@@ -71,33 +72,67 @@ public:
 	 */
 	virtual void waitForStop() {}
 
+	/*
+	 * Mustn't block.
+	 */
 	virtual void configNodesStarted() {}
 
+	/*
+	 * Mustn't block.
+	 */
 	virtual void startUpComplete() {}
 
+	/*
+	 * Mustn't block.
+	 */
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
+
+	/*
+	 * Mustn't block.
+	 */
 	virtual void setNodeVariable(std::string& variable, PVariable& value) {}
 
+	/*
+	 * Mustn't block.
+	 */
 	virtual PVariable getConfigParameterIncoming(std::string name) { return std::make_shared<Flows::Variable>(); }
 
-	void setLog(std::function<void(std::string, int32_t, std::string)> value);
-	void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
-	void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
-	void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
-	void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
-	void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray&)> value) { _invokeNodeMethod.swap(value); }
-	void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
-	void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
-	void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
-	void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
+	// {{{ Internal methods
+		void setLog(std::function<void(std::string, int32_t, std::string)> value);
+		void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
+		void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
+		void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
+		void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
+		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray&)> value) { _invokeNodeMethod.swap(value); }
+		void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
+		void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
+		void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
+		void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
+		void queueInput(PNodeInfo& nodeInfo, uint32_t index, PVariable& message);
+	// }}}
 
+	/*
+	 * Can block.
+	 */
 	virtual void input(PNodeInfo nodeInfo, uint32_t index, PVariable message) {}
 
 	/*
-	 * Executes local RPC method
+	 * Executes local RPC method. Mustn't block.
 	 */
 	virtual PVariable invokeLocal(std::string methodName, PArray& parameters);
 protected:
+	class QueueEntry : public IQueueEntry
+	{
+	public:
+		QueueEntry() {}
+		QueueEntry(PNodeInfo& nodeInfo, uint32_t index, PVariable& message) { this->nodeInfo = nodeInfo; this->index = index; this->message = message; }
+		virtual ~QueueEntry() {}
+
+		PNodeInfo nodeInfo;
+		uint32_t index = -1;
+		PVariable message;
+	};
+
 	std::string _path;
 	std::string _namespace;
 	std::string _type;
@@ -133,6 +168,8 @@ private:
 	std::function<PVariable(std::string, std::string)> _getNodeData;
 	std::function<void(std::string, std::string, PVariable)> _setNodeData;
 	std::function<PVariable(std::string, std::string)> _getConfigParameter;
+
+	void processQueueEntry(int32_t index, std::shared_ptr<IQueueEntry>& entry);
 
 	INode(const INode&) = delete;
 	INode& operator=(const INode&) = delete;

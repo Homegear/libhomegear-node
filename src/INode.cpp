@@ -33,7 +33,7 @@
 namespace Flows
 {
 
-INode::INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected) : IQueue(1, 100)
+INode::INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected)
 {
 	_referenceCounter = 0;
 
@@ -42,12 +42,10 @@ INode::INode(std::string path, std::string nodeNamespace, std::string type, cons
 	_namespace = nodeNamespace;
 	_type = type;
 	_frontendConnected = frontendConnected;
-	startQueue(0, false, 1);
 }
 
 INode::~INode()
 {
-	stopQueue(0);
 	//Function pointers need to be cleaned up before unloading the module
 	_log = std::function<void(std::string, int32_t, std::string)>();
 	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
@@ -59,43 +57,6 @@ INode::~INode()
 	_getNodeData = std::function<PVariable(std::string, std::string)>();
 	_setNodeData = std::function<void(std::string, std::string, PVariable)>();
 	_getConfigParameter = std::function<PVariable(std::string, std::string)>();
-}
-
-void INode::queueInput(PNodeInfo& nodeInfo, uint32_t index, PVariable& message)
-{
-	try
-	{
-		std::shared_ptr<Flows::IQueueEntry> queueEntry = std::make_shared<QueueEntry>(nodeInfo, index, message);
-		enqueue(0, queueEntry);
-	}
-	catch(const std::exception& ex)
-	{
-		Flows::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		Flows::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
-}
-
-void INode::processQueueEntry(int32_t index, std::shared_ptr<IQueueEntry>& entry)
-{
-	try
-	{
-		std::shared_ptr<QueueEntry> queueEntry;
-		queueEntry = std::dynamic_pointer_cast<QueueEntry>(entry);
-		if(!queueEntry) return;
-
-		input(queueEntry->nodeInfo, queueEntry->index, queueEntry->message);
-	}
-	catch(const std::exception& ex)
-	{
-		Flows::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		Flows::Output::printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 }
 
 void INode::setLog(std::function<void(std::string, int32_t, std::string)> value)

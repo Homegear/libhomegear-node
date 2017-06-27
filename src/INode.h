@@ -36,7 +36,6 @@
 #include "Output.h"
 #include "HelperFunctions.h"
 #include "Math.h"
-#include "IQueue.h"
 
 #include <atomic>
 #include <mutex>
@@ -46,7 +45,7 @@
 namespace Flows
 {
 
-class INode : public IQueue
+class INode
 {
 public:
 	INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected);
@@ -108,11 +107,10 @@ public:
 		void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
 		void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
 		void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
-		void queueInput(PNodeInfo& nodeInfo, uint32_t index, PVariable& message);
 	// }}}
 
 	/*
-	 * Can block.
+	 * Shouldn't block. When it blocks for a longer time, consider using IQueue.
 	 */
 	virtual void input(PNodeInfo nodeInfo, uint32_t index, PVariable message) {}
 
@@ -121,18 +119,6 @@ public:
 	 */
 	virtual PVariable invokeLocal(std::string methodName, PArray& parameters);
 protected:
-	class QueueEntry : public IQueueEntry
-	{
-	public:
-		QueueEntry() {}
-		QueueEntry(PNodeInfo& nodeInfo, uint32_t index, PVariable& message) { this->nodeInfo = nodeInfo; this->index = index; this->message = message; }
-		virtual ~QueueEntry() {}
-
-		PNodeInfo nodeInfo;
-		uint32_t index = -1;
-		PVariable message;
-	};
-
 	std::string _path;
 	std::string _namespace;
 	std::string _type;
@@ -168,8 +154,6 @@ private:
 	std::function<PVariable(std::string, std::string)> _getNodeData;
 	std::function<void(std::string, std::string, PVariable)> _setNodeData;
 	std::function<PVariable(std::string, std::string)> _getConfigParameter;
-
-	void processQueueEntry(int32_t index, std::shared_ptr<IQueueEntry>& entry);
 
 	INode(const INode&) = delete;
 	INode& operator=(const INode&) = delete;

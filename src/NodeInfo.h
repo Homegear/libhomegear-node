@@ -33,6 +33,8 @@
 
 #include "Variable.h"
 
+#include <atomic>
+
 namespace Flows
 {
 
@@ -51,10 +53,10 @@ public:
 	PVariable info;
 	std::vector<std::vector<Wire>> wiresIn;
 	std::vector<std::vector<Wire>> wiresOut;
-	int64_t lastNodeEvent1 = 0;
-	int64_t lastNodeEvent2 = 0;
+	std::atomic<int64_t> lastNodeEvent1;
+	std::atomic<int64_t> lastNodeEvent2;
 
-	NodeInfo() {}
+	NodeInfo();
 	virtual ~NodeInfo() {}
 	PVariable serialize();
 protected:

@@ -33,6 +33,12 @@
 namespace Flows
 {
 
+NodeInfo::NodeInfo()
+{
+	lastNodeEvent1 = 0;
+	lastNodeEvent2 = 0;
+}
+
 PVariable NodeInfo::serialize()
 {
 	PVariable info = std::make_shared<Variable>(VariableType::tStruct);

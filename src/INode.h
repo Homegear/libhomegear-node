@@ -54,6 +54,8 @@ public:
 	std::string getNamespace() { return _namespace; }
 	std::string getType() { return _type; }
 	std::string getPath() { return _path; }
+	std::string getFlowId() { return _flowId; }
+	void setFlowId(std::string value) { _flowId = value; }
 	std::string getId() { return _id; }
 	void setId(std::string value) { _id = value; }
 	std::mutex& getInputMutex() { return _inputMutex; }
@@ -122,6 +124,7 @@ protected:
 	std::string _path;
 	std::string _namespace;
 	std::string _type;
+	std::string _flowId;
 	std::string _id;
 	const std::atomic_bool* _frontendConnected;
 
@@ -139,6 +142,10 @@ protected:
 	void nodeEvent(std::string topic, PVariable& value);
 	PVariable getNodeData(std::string key);
 	void setNodeData(std::string key, PVariable value);
+	PVariable getFlowData(std::string key);
+	void setFlowData(std::string key, PVariable value);
+	PVariable getGlobalData(std::string key);
+	void setGlobalData(std::string key, PVariable value);
 	PVariable getConfigParameter(std::string nodeId, std::string name);
 private:
 	std::atomic_bool _locked;

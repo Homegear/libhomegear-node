@@ -91,7 +91,7 @@ public:
 	/*
 	 * Mustn't block.
 	 */
-	virtual void setNodeVariable(std::string& variable, PVariable& value) {}
+	virtual void setNodeVariable(std::string variable, PVariable value) {}
 
 	/*
 	 * Mustn't block.
@@ -103,8 +103,8 @@ public:
 		void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
 		void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
 		void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
-		void setInvoke(std::function<PVariable(std::string, PArray&)> value) { _invoke.swap(value); }
-		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray&)> value) { _invokeNodeMethod.swap(value); }
+		void setInvoke(std::function<PVariable(std::string, PArray)> value) { _invoke.swap(value); }
+		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray)> value) { _invokeNodeMethod.swap(value); }
 		void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
 		void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
 		void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
@@ -119,7 +119,7 @@ public:
 	/*
 	 * Executes local RPC method. Mustn't block.
 	 */
-	virtual PVariable invokeLocal(std::string methodName, PArray& parameters);
+	virtual PVariable invokeLocal(std::string methodName, PArray parameters);
 protected:
 	std::string _path;
 	std::string _namespace;
@@ -131,15 +131,15 @@ protected:
 	/*
 	 * Stores RPC methods for inter-node communication (intended for configuration nodes)
 	 */
-	std::map<std::string, std::function<PVariable(PArray& parameters)>> _localRpcMethods;
+	std::map<std::string, std::function<PVariable(PArray parameters)>> _localRpcMethods;
 
 	void log(int32_t logLevel, std::string message);
 	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void output(uint32_t outputIndex, PVariable message);
-	PVariable invoke(std::string methodName, PArray& parameters);
-	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray& parameters);
-	void nodeEvent(std::string topic, PVariable& value);
+	PVariable invoke(std::string methodName, PArray parameters);
+	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters);
+	void nodeEvent(std::string topic, PVariable value);
 	PVariable getNodeData(std::string key);
 	void setNodeData(std::string key, PVariable value);
 	PVariable getFlowData(std::string key);
@@ -155,8 +155,8 @@ private:
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
 	std::function<void(std::string, uint32_t, PVariable)> _output;
-	std::function<PVariable(std::string, PArray&)> _invoke;
-	std::function<PVariable(std::string, std::string, PArray&)> _invokeNodeMethod;
+	std::function<PVariable(std::string, PArray)> _invoke;
+	std::function<PVariable(std::string, std::string, PArray)> _invokeNodeMethod;
 	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
 	std::function<PVariable(std::string, std::string)> _getNodeData;
 	std::function<void(std::string, std::string, PVariable)> _setNodeData;

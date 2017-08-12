@@ -51,8 +51,8 @@ INode::~INode()
 	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_output = std::function<void(std::string, uint32_t, PVariable)>();
-	_invoke = std::function<PVariable(std::string, PArray&)>();
-	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray&)>();
+	_invoke = std::function<PVariable(std::string, PArray)>();
+	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray)>();
 	_nodeEvent = std::function<void(std::string, std::string, PVariable)>();
 	_getNodeData = std::function<PVariable(std::string, std::string)>();
 	_setNodeData = std::function<void(std::string, std::string, PVariable)>();
@@ -85,21 +85,21 @@ void INode::output(uint32_t index, PVariable message)
 	if(_output) _output(_id, index, message);
 }
 
-PVariable INode::invoke(std::string methodName, PArray& parameters)
+PVariable INode::invoke(std::string methodName, PArray parameters)
 {
 	if(_invoke) return _invoke(methodName, parameters);
 	return Variable::createError(-32500, "No callback method set.");
 }
 
-PVariable INode::invokeNodeMethod(std::string nodeId, std::string methodName, PArray& parameters)
+PVariable INode::invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters)
 {
 	if(_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, parameters);
 	return Variable::createError(-32500, "No callback method set.");
 }
 
-PVariable INode::invokeLocal(std::string methodName, PArray& parameters)
+PVariable INode::invokeLocal(std::string methodName, PArray parameters)
 {
-	std::map<std::string, std::function<PVariable(PArray& parameters)>>::iterator localMethodIterator = _localRpcMethods.find(methodName);
+	std::map<std::string, std::function<PVariable(PArray parameters)>>::iterator localMethodIterator = _localRpcMethods.find(methodName);
 	if(localMethodIterator == _localRpcMethods.end())
 	{
 		Output::printError("Warning: RPC method not found: " + methodName);
@@ -109,7 +109,7 @@ PVariable INode::invokeLocal(std::string methodName, PArray& parameters)
 	return localMethodIterator->second(parameters);
 }
 
-void INode::nodeEvent(std::string topic, PVariable& value)
+void INode::nodeEvent(std::string topic, PVariable value)
 {
 	if(_nodeEvent) _nodeEvent(_id, topic, value);
 }

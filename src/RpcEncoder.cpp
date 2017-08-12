@@ -299,7 +299,7 @@ void RpcEncoder::encodeVariable(std::vector<char>& packet, std::shared_ptr<Varia
 	{
 		if(_forceInteger64)
 		{
-			variable->integerValue64 = variable->integerValue;
+			if(variable->integerValue64 == 0) variable->integerValue64 = variable->integerValue;
 			encodeInteger64(packet, variable);
 		}
 		else encodeInteger(packet, variable);
@@ -349,7 +349,7 @@ void RpcEncoder::encodeVariable(std::vector<uint8_t>& packet, std::shared_ptr<Va
 	{
 		if(_forceInteger64)
 		{
-			variable->integerValue64 = variable->integerValue;
+			if(variable->integerValue64 == 0) variable->integerValue64 = variable->integerValue;
 			encodeInteger64(packet, variable);
 		}
 		else encodeInteger(packet, variable);

@@ -147,6 +147,11 @@ void INode::setGlobalData(std::string key, PVariable value)
 	if(_setNodeData) _setNodeData("global", key, value);
 }
 
+void INode::setInternalMessage(PVariable message)
+{
+	if(_setInternalMessage) _setInternalMessage(_id, message);
+}
+
 PVariable INode::getConfigParameter(std::string nodeId, std::string name)
 {
 	if(_getConfigParameter) return _getConfigParameter(nodeId, name);

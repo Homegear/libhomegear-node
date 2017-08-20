@@ -108,6 +108,7 @@ public:
 		void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
 		void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
 		void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
+		void setSetInternalMessage(std::function<void(std::string, PVariable)> value) { _setInternalMessage.swap(value); }
 		void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
 	// }}}
 
@@ -146,6 +147,7 @@ protected:
 	void setFlowData(std::string key, PVariable value);
 	PVariable getGlobalData(std::string key);
 	void setGlobalData(std::string key, PVariable value);
+	void setInternalMessage(PVariable message);
 	PVariable getConfigParameter(std::string nodeId, std::string name);
 private:
 	std::atomic_bool _locked;
@@ -160,6 +162,7 @@ private:
 	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
 	std::function<PVariable(std::string, std::string)> _getNodeData;
 	std::function<void(std::string, std::string, PVariable)> _setNodeData;
+	std::function<void(std::string, PVariable)> _setInternalMessage;
 	std::function<PVariable(std::string, std::string)> _getConfigParameter;
 
 	INode(const INode&) = delete;

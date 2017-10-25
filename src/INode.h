@@ -104,7 +104,7 @@ public:
 		void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
 		void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
 		void setInvoke(std::function<PVariable(std::string, PArray)> value) { _invoke.swap(value); }
-		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray)> value) { _invokeNodeMethod.swap(value); }
+		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray, bool)> value) { _invokeNodeMethod.swap(value); }
 		void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
 		void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
 		void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
@@ -139,7 +139,7 @@ protected:
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void output(uint32_t outputIndex, PVariable message);
 	PVariable invoke(std::string methodName, PArray parameters);
-	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters);
+	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters, bool);
 	void nodeEvent(std::string topic, PVariable value);
 	PVariable getNodeData(std::string key);
 	void setNodeData(std::string key, PVariable value);
@@ -158,7 +158,7 @@ private:
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
 	std::function<void(std::string, uint32_t, PVariable)> _output;
 	std::function<PVariable(std::string, PArray)> _invoke;
-	std::function<PVariable(std::string, std::string, PArray)> _invokeNodeMethod;
+	std::function<PVariable(std::string, std::string, PArray, bool)> _invokeNodeMethod;
 	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
 	std::function<PVariable(std::string, std::string)> _getNodeData;
 	std::function<void(std::string, std::string, PVariable)> _setNodeData;

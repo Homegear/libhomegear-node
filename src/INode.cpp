@@ -52,7 +52,7 @@ INode::~INode()
 	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_output = std::function<void(std::string, uint32_t, PVariable)>();
 	_invoke = std::function<PVariable(std::string, PArray)>();
-	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray)>();
+	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
 	_nodeEvent = std::function<void(std::string, std::string, PVariable)>();
 	_getNodeData = std::function<PVariable(std::string, std::string)>();
 	_setNodeData = std::function<void(std::string, std::string, PVariable)>();
@@ -91,9 +91,9 @@ PVariable INode::invoke(std::string methodName, PArray parameters)
 	return Variable::createError(-32500, "No callback method set.");
 }
 
-PVariable INode::invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters)
+PVariable INode::invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters, bool wait)
 {
-	if(_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, parameters);
+	if(_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, parameters, wait);
 	return Variable::createError(-32500, "No callback method set.");
 }
 

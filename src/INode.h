@@ -63,37 +63,37 @@ public:
 	virtual bool init(PNodeInfo nodeInfo) { return true; };
 	virtual bool start() { return true; }
 
-	/*
+	/**
 	 * Mustn't block. Set variables causing threads to finish here. After stop() is called for all nodes, waitForStop() is called() where threads can be joined.
 	 */
 	virtual void stop() {}
 
-	/*
+	/**
 	 * Wait here until everything is cleaned up. Keep the waiting as short as possible as this method is called serially and synchronouly for all nodes. Join threads here.
 	 */
 	virtual void waitForStop() {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual void configNodesStarted() {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual void startUpComplete() {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual void setNodeVariable(std::string variable, PVariable value) {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual PVariable getConfigParameterIncoming(std::string name) { return std::make_shared<Flows::Variable>(); }
@@ -112,12 +112,16 @@ public:
 		void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
 	// }}}
 
-	/*
-	 * Shouldn't block. When it blocks for a longer time, consider using IQueue.
+	/**
+	 * Mustn't block. When it blocks for a longer time, consider using IQueue.
+	 *
+	 * @param nodeInfo The info structure of this node. Mustn't be changed.
+	 * @param index The index of the input starting with 0.
+	 * @param message The message structure. Mustn't be changed.
 	 */
 	virtual void input(const PNodeInfo nodeInfo, uint32_t index, const PVariable message) {}
 
-	/*
+	/**
 	 * Executes local RPC method. Mustn't block.
 	 */
 	virtual PVariable invokeLocal(std::string methodName, PArray parameters);
@@ -130,7 +134,7 @@ protected:
 	std::string _id;
 	const std::atomic_bool* _frontendConnected;
 
-	/*
+	/**
 	 * Stores RPC methods for inter-node communication (intended for configuration nodes)
 	 */
 	std::map<std::string, std::function<PVariable(PArray parameters)>> _localRpcMethods;

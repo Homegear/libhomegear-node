@@ -48,7 +48,7 @@ public:
 class IQueue : public IQueueBase
 {
 public:
-	IQueue(uint32_t queueCount, uint32_t bufferSize);
+	IQueue(std::shared_ptr<Output>& output, uint32_t queueCount, uint32_t bufferSize);
 	virtual ~IQueue();
 	void startQueue(int32_t index, bool waitWhenFull, uint32_t processingThreadCount);
 	void stopQueue(int32_t index);
@@ -56,6 +56,7 @@ public:
 	virtual void processQueueEntry(int32_t index, std::shared_ptr<IQueueEntry>& entry) = 0;
 	bool queueEmpty(int32_t index);
 private:
+	std::shared_ptr<Output> _out;
 	int32_t _bufferSize = 10000;
 	std::vector<int32_t> _bufferHead;
 	std::vector<int32_t> _bufferTail;

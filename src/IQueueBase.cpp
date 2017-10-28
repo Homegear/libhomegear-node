@@ -35,8 +35,9 @@
 namespace Flows
 {
 
-IQueueBase::IQueueBase(uint32_t queueCount)
+IQueueBase::IQueueBase(std::shared_ptr<Output>& output, uint32_t queueCount)
 {
+	_out = output;
 	if(queueCount < 1000000) _queueCount = queueCount;
 	_stopProcessingThread.reset(new std::atomic_bool[queueCount]);
 
@@ -51,7 +52,7 @@ void IQueueBase::printQueueFullError(std::string message)
 	{
 		_lastQueueFullError = Flows::HelperFunctions::getTime();
 		_droppedEntries = 0;
-		Flows::Output::printError(message + " This message won't repeat for 10 seconds. Dropped outputs since last message: " + std::to_string(droppedEntries));
+		_out->printError(message + " This message won't repeat for 10 seconds. Dropped outputs since last message: " + std::to_string(droppedEntries));
 	}
 }
 

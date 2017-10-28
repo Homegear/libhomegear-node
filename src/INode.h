@@ -57,7 +57,7 @@ public:
 	std::string getFlowId() { return _flowId; }
 	void setFlowId(std::string value) { _flowId = value; }
 	std::string getId() { return _id; }
-	void setId(std::string value) { _id = value; }
+	void setId(std::string value) { _id = value; if(_out) _out->setNodeId(value); }
 	std::mutex& getInputMutex() { return _inputMutex; }
 
 	virtual bool init(PNodeInfo nodeInfo) { return true; };
@@ -150,6 +150,7 @@ protected:
 	void setInternalMessage(PVariable message);
 	PVariable getConfigParameter(std::string nodeId, std::string name);
 private:
+    std::shared_ptr<Output> _out;
 	std::atomic_bool _locked;
 	std::atomic_int _referenceCounter;
 	std::mutex _inputMutex;

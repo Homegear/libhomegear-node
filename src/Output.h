@@ -46,12 +46,29 @@ class Output
 {
 public:
 	/**
+	 * The main constructor.
+	 */
+	Output(std::string& nodeId, std::function<void(std::string, int32_t, std::string)>* logMethod);
+
+	/**
 	 * The destructor.
 	 * It does nothing.
 	 */
-	virtual ~Output();
+	virtual ~Output() = default;
 
-	static void init(std::string& nodeId, std::function<void(std::string, int32_t, std::string)>* logMethod);
+    /**
+     * Sets _nodeId.
+     *
+     * @param value The new node ID.
+     */
+    void setNodeId(std::string& value) { _nodeId = value; }
+
+    /**
+     * Sets _log.
+     *
+     * @param value The new log function.
+     */
+    void setLog(std::function<void(std::string, int32_t, std::string)>* value) { _log = value; }
 
 	/**
 	 * Prints an error message with filename, line number and function name.
@@ -61,7 +78,7 @@ public:
 	 * @param function The function name where the error occured.
 	 * @param what The error message.
 	 */
-	static void printEx(std::string file, uint32_t line, std::string function, std::string what = "");
+	void printEx(std::string file, uint32_t line, std::string function, std::string what = "");
 
 	/**
 	 * Prints a critical error message (debug level < 1).
@@ -74,7 +91,7 @@ public:
 	 * @param errorString The error message.
 	 * @param errorCallback If set to false, the error will not be send to RPC event servers (default true)
 	 */
-	static void printCritical(std::string errorString, bool errorCallback = true);
+	void printCritical(std::string errorString, bool errorCallback = true);
 
 	/**
 	 * Prints an error message (debug level < 2).
@@ -86,7 +103,7 @@ public:
 	 * @see printMessage()
 	 * @param errorString The error message.
 	 */
-	static void printError(std::string errorString);
+	void printError(std::string errorString);
 
 	/**
 	 * Prints a warning message (debug level < 3).
@@ -98,7 +115,7 @@ public:
 	 * @see printMessage()
 	 * @param errorString The warning message.
 	 */
-	static void printWarning(std::string errorString);
+	void printWarning(std::string errorString);
 
 	/**
 	 * Prints a info message (debug level < 4).
@@ -110,7 +127,7 @@ public:
 	 * @see printMessage()
 	 * @param message The message.
 	 */
-	static void printInfo(std::string message);
+	void printInfo(std::string message);
 
 	/**
 	 * Prints a debug message (debug level < 5).
@@ -123,7 +140,7 @@ public:
 	 * @param message The message.
 	 * @param minDebugLevel The minimal debug level (default 5).
 	 */
-	static void printDebug(std::string message, int32_t minDebugLevel = 5);
+	void printDebug(std::string message, int32_t minDebugLevel = 5);
 
 	/**
 	 * Prints a message regardless of the current debug level.
@@ -136,20 +153,14 @@ public:
 	 * @param message The message.
 	 * @param minDebugLevel The minimal debug level (default 0).
 	 */
-	static void printMessage(std::string message, int32_t minDebugLevel = 0);
+	void printMessage(std::string message, int32_t minDebugLevel = 0);
 
 	/**
 	 * Calls the error callback function registered with the constructor.
 	 */
 private:
-	static std::string _nodeId;
-	static std::function<void(std::string, int32_t, std::string)>* _log;
-
-	/**
-	 * The main constructor.
-	 * The constructor does nothing.
-	 */
-	Output();
+	std::string _nodeId;
+	std::function<void(std::string, int32_t, std::string)>* _log = nullptr;
 };
 }
 #endif

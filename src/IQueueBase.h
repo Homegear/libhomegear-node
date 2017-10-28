@@ -31,6 +31,8 @@
 #ifndef FLOWSIQUEUEBASE_H_
 #define FLOWSIQUEUEBASE_H_
 
+#include "Output.h"
+
 #include <atomic>
 #include <memory>
 #include <condition_variable>
@@ -42,11 +44,12 @@ namespace Flows
 class IQueueBase
 {
 public:
-	IQueueBase(uint32_t queueCount);
+	IQueueBase(std::shared_ptr<Output>& output, uint32_t queueCount);
 	virtual ~IQueueBase() {}
 
 	void printQueueFullError(std::string message);
 protected:
+	std::shared_ptr<Output> _out;
 	int32_t _queueCount = 2;
 	std::unique_ptr<std::atomic_bool[]> _stopProcessingThread;
 

@@ -115,7 +115,7 @@ public:
 	/*
 	 * Shouldn't block. When it blocks for a longer time, consider using IQueue.
 	 */
-	virtual void input(PNodeInfo nodeInfo, uint32_t index, PVariable message) {}
+	virtual void input(const PNodeInfo nodeInfo, uint32_t index, const PVariable message) {}
 
 	/*
 	 * Executes local RPC method. Mustn't block.

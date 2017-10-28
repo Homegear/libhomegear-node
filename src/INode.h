@@ -122,6 +122,7 @@ public:
 	 */
 	virtual PVariable invokeLocal(std::string methodName, PArray parameters);
 protected:
+    std::shared_ptr<Output> _out;
 	std::string _path;
 	std::string _namespace;
 	std::string _type;
@@ -150,7 +151,6 @@ protected:
 	void setInternalMessage(PVariable message);
 	PVariable getConfigParameter(std::string nodeId, std::string name);
 private:
-    std::shared_ptr<Output> _out;
 	std::atomic_bool _locked;
 	std::atomic_int _referenceCounter;
 	std::mutex _inputMutex;

@@ -51,7 +51,7 @@ INode::~INode()
 	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_output = std::function<void(std::string, uint32_t, PVariable)>();
-    _outputSequence = std::function<void(std::string, uint32_t, PVariable)>();
+    _outputSequence = std::function<void(std::string, PVariable)>();
 	_invoke = std::function<PVariable(std::string, PArray)>();
 	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
 	_nodeEvent = std::function<void(std::string, std::string, PVariable)>();
@@ -86,9 +86,9 @@ void INode::output(uint32_t index, PVariable message)
 	if(_output) _output(_id, index, message);
 }
 
-void INode::outputSequence(uint32_t index, PVariable message)
+void INode::outputSequence(PVariable message)
 {
-    if(_outputSequence) _outputSequence(_id, index, message);
+    if(_outputSequence) _outputSequence(_id, message);
 }
 
 PVariable INode::invoke(std::string methodName, PArray parameters)

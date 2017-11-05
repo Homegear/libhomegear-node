@@ -50,7 +50,7 @@ INode::~INode()
 	_log = std::function<void(std::string, int32_t, std::string)>();
 	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
-	_output = std::function<void(std::string, uint32_t, PVariable)>();
+	_output = std::function<void(std::string, uint32_t, PVariable, bool)>();
 	_invoke = std::function<PVariable(std::string, PArray)>();
 	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
 	_nodeEvent = std::function<void(std::string, std::string, PVariable)>();

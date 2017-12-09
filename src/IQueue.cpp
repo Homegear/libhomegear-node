@@ -33,8 +33,9 @@
 namespace Flows
 {
 
-IQueue::IQueue(uint32_t queueCount, uint32_t bufferSize) : IQueueBase(queueCount)
+IQueue::IQueue(std::shared_ptr<Output>& output, uint32_t queueCount, uint32_t bufferSize) : IQueueBase(output, queueCount)
 {
+	_out = output;
 	if(bufferSize < 2000000000) _bufferSize = (int32_t)bufferSize;
 
 	_bufferHead.resize(queueCount);

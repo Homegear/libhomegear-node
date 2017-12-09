@@ -35,8 +35,8 @@ namespace Flows
 
 INode::INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected)
 {
+	_out = std::make_shared<Output>(_id, nullptr); //_id is empty at this point and will be set through setId()
 	_referenceCounter = 0;
-
 	_locked = false;
 	_path = path;
 	_namespace = nodeNamespace;
@@ -50,9 +50,9 @@ INode::~INode()
 	_log = std::function<void(std::string, int32_t, std::string)>();
 	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
-	_output = std::function<void(std::string, uint32_t, PVariable)>();
+	_output = std::function<void(std::string, uint32_t, PVariable, bool)>();
 	_invoke = std::function<PVariable(std::string, PArray)>();
-	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray)>();
+	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
 	_nodeEvent = std::function<void(std::string, std::string, PVariable)>();
 	_getNodeData = std::function<PVariable(std::string, std::string)>();
 	_setNodeData = std::function<void(std::string, std::string, PVariable)>();
@@ -62,7 +62,7 @@ INode::~INode()
 void INode::setLog(std::function<void(std::string, int32_t, std::string)> value)
 {
 	_log.swap(value);
-	Output::init(_id, &_log);
+	if(_out) _out->setLog(&_log);
 }
 
 void INode::log(int32_t logLevel, std::string message)
@@ -80,9 +80,9 @@ void INode::unsubscribePeer(uint64_t peerId, int32_t channel, std::string variab
 	if(_unsubscribePeer) _unsubscribePeer(_id, peerId, channel, variable);
 }
 
-void INode::output(uint32_t index, PVariable message)
+void INode::output(uint32_t index, PVariable message, bool synchronous)
 {
-	if(_output) _output(_id, index, message);
+	if(_output) _output(_id, index, message, synchronous);
 }
 
 PVariable INode::invoke(std::string methodName, PArray parameters)
@@ -91,9 +91,9 @@ PVariable INode::invoke(std::string methodName, PArray parameters)
 	return Variable::createError(-32500, "No callback method set.");
 }
 
-PVariable INode::invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters)
+PVariable INode::invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters, bool wait)
 {
-	if(_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, parameters);
+	if(_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, parameters, wait);
 	return Variable::createError(-32500, "No callback method set.");
 }
 
@@ -102,7 +102,7 @@ PVariable INode::invokeLocal(std::string methodName, PArray parameters)
 	std::map<std::string, std::function<PVariable(PArray parameters)>>::iterator localMethodIterator = _localRpcMethods.find(methodName);
 	if(localMethodIterator == _localRpcMethods.end())
 	{
-		Output::printError("Warning: RPC method not found: " + methodName);
+		_out->printError("Warning: RPC method not found: " + methodName);
 		return Variable::createError(-32601, ": Requested method not found.");
 	}
 

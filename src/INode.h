@@ -57,43 +57,43 @@ public:
 	std::string getFlowId() { return _flowId; }
 	void setFlowId(std::string value) { _flowId = value; }
 	std::string getId() { return _id; }
-	void setId(std::string value) { _id = value; }
+	void setId(std::string value) { _id = value; if(_out) _out->setNodeId(value); }
 	std::mutex& getInputMutex() { return _inputMutex; }
 
 	virtual bool init(PNodeInfo nodeInfo) { return true; };
 	virtual bool start() { return true; }
 
-	/*
+	/**
 	 * Mustn't block. Set variables causing threads to finish here. After stop() is called for all nodes, waitForStop() is called() where threads can be joined.
 	 */
 	virtual void stop() {}
 
-	/*
+	/**
 	 * Wait here until everything is cleaned up. Keep the waiting as short as possible as this method is called serially and synchronouly for all nodes. Join threads here.
 	 */
 	virtual void waitForStop() {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual void configNodesStarted() {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual void startUpComplete() {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual void setNodeVariable(std::string variable, PVariable value) {}
 
-	/*
+	/**
 	 * Mustn't block.
 	 */
 	virtual PVariable getConfigParameterIncoming(std::string name) { return std::make_shared<Flows::Variable>(); }
@@ -102,9 +102,9 @@ public:
 		void setLog(std::function<void(std::string, int32_t, std::string)> value);
 		void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
 		void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
-		void setOutput(std::function<void(std::string, uint32_t, PVariable)> value) { _output.swap(value); }
+		void setOutput(std::function<void(std::string, uint32_t, PVariable, bool)> value) { _output.swap(value); }
 		void setInvoke(std::function<PVariable(std::string, PArray)> value) { _invoke.swap(value); }
-		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray)> value) { _invokeNodeMethod.swap(value); }
+		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray, bool)> value) { _invokeNodeMethod.swap(value); }
 		void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
 		void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
 		void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
@@ -112,16 +112,21 @@ public:
 		void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
 	// }}}
 
-	/*
-	 * Shouldn't block. When it blocks for a longer time, consider using IQueue.
+	/**
+	 * Mustn't block. When it blocks for a longer time, consider using IQueue.
+	 *
+	 * @param nodeInfo The info structure of this node. Mustn't be changed.
+	 * @param index The index of the input starting with 0.
+	 * @param message The message structure. Mustn't be changed.
 	 */
-	virtual void input(PNodeInfo nodeInfo, uint32_t index, PVariable message) {}
+	virtual void input(const PNodeInfo nodeInfo, uint32_t index, const PVariable message) {}
 
-	/*
+	/**
 	 * Executes local RPC method. Mustn't block.
 	 */
 	virtual PVariable invokeLocal(std::string methodName, PArray parameters);
 protected:
+    std::shared_ptr<Output> _out;
 	std::string _path;
 	std::string _namespace;
 	std::string _type;
@@ -129,7 +134,7 @@ protected:
 	std::string _id;
 	const std::atomic_bool* _frontendConnected;
 
-	/*
+	/**
 	 * Stores RPC methods for inter-node communication (intended for configuration nodes)
 	 */
 	std::map<std::string, std::function<PVariable(PArray parameters)>> _localRpcMethods;
@@ -137,9 +142,9 @@ protected:
 	void log(int32_t logLevel, std::string message);
 	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
-	void output(uint32_t outputIndex, PVariable message);
+	void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
 	PVariable invoke(std::string methodName, PArray parameters);
-	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters);
+	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters, bool);
 	void nodeEvent(std::string topic, PVariable value);
 	PVariable getNodeData(std::string key);
 	void setNodeData(std::string key, PVariable value);
@@ -156,9 +161,9 @@ private:
 	std::function<void(std::string, int32_t, std::string)> _log;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
-	std::function<void(std::string, uint32_t, PVariable)> _output;
+	std::function<void(std::string, uint32_t, PVariable, bool)> _output;
 	std::function<PVariable(std::string, PArray)> _invoke;
-	std::function<PVariable(std::string, std::string, PArray)> _invokeNodeMethod;
+	std::function<PVariable(std::string, std::string, PArray, bool)> _invokeNodeMethod;
 	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
 	std::function<PVariable(std::string, std::string)> _getNodeData;
 	std::function<void(std::string, std::string, PVariable)> _setNodeData;

@@ -158,4 +158,13 @@ PVariable INode::getConfigParameter(std::string nodeId, std::string name)
 	return Variable::createError(-32500, "No callback method set.");
 }
 
+PVariable INode::getNodeVariable(std::string variable)
+{
+    return Flows::PVariable();
+}
+
+void INode::setNodeVariable(std::string variable, PVariable value)
+{
+}
+
 }

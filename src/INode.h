@@ -88,10 +88,15 @@ public:
 	 */
 	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 
+    /**
+	 * Mustn't block.
+	 */
+    virtual PVariable getNodeVariable(std::string variable);
+
 	/**
 	 * Mustn't block.
 	 */
-	virtual void setNodeVariable(std::string variable, PVariable value) {}
+	virtual void setNodeVariable(std::string variable, PVariable value);
 
 	/**
 	 * Mustn't block.

@@ -86,7 +86,7 @@ public:
 	/**
 	 * Mustn't block.
 	 */
-	virtual void variableEvent(uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
+	virtual void variableEvent(std::string source, uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 
     /**
 	 * Mustn't block.

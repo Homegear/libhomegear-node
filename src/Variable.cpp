@@ -101,11 +101,11 @@ bool Variable::operator==(const Variable& rhs)
 {
 	if(type != rhs.type) return false;
 	if(type == VariableType::tBoolean) return booleanValue == rhs.booleanValue;
-	if(type == VariableType::tInteger) return integerValue == rhs.integerValue;
-	if(type == VariableType::tInteger64) return integerValue64 == rhs.integerValue64;
-	if(type == VariableType::tString) return stringValue == rhs.stringValue;
-	if(type == VariableType::tFloat) return floatValue == rhs.floatValue;
-	if(type == VariableType::tArray)
+    else if(type == VariableType::tInteger) return integerValue == rhs.integerValue;
+    else if(type == VariableType::tInteger64) return integerValue64 == rhs.integerValue64;
+    else if(type == VariableType::tString) return stringValue == rhs.stringValue;
+    else if(type == VariableType::tFloat) return floatValue == rhs.floatValue;
+    else if(type == VariableType::tArray)
 	{
 		if(arrayValue->size() != rhs.arrayValue->size()) return false;
 		for(std::pair<Array::iterator, Array::iterator> i(arrayValue->begin(), rhs.arrayValue->begin()); i.first != arrayValue->end(); ++i.first, ++i.second)
@@ -113,7 +113,7 @@ bool Variable::operator==(const Variable& rhs)
 			if(*(i.first) != *(i.second)) return false;
 		}
 	}
-	if(type == VariableType::tStruct)
+    else if(type == VariableType::tStruct)
 	{
 		if(structValue->size() != rhs.structValue->size()) return false;
 		for(std::pair<Struct::iterator, Struct::iterator> i(structValue->begin(), rhs.structValue->begin()); i.first != structValue->end(); ++i.first, ++i.second)
@@ -121,8 +121,8 @@ bool Variable::operator==(const Variable& rhs)
 			if(i.first->first != i.first->first || *(i.second->second) != *(i.second->second)) return false;
 		}
 	}
-	if(type == VariableType::tBase64) return stringValue == rhs.stringValue;
-	if(type == VariableType::tBinary)
+    else if(type == VariableType::tBase64) return stringValue == rhs.stringValue;
+    else if(type == VariableType::tBinary)
 	{
 		if(binaryValue.size() != rhs.binaryValue.size()) return false;
 		if(binaryValue.empty()) return true;
@@ -140,76 +140,76 @@ bool Variable::operator==(const Variable& rhs)
 bool Variable::operator<(const Variable& rhs)
 {
 	if(type == VariableType::tBoolean) return booleanValue < rhs.booleanValue;
-	if(type == VariableType::tInteger) return integerValue < rhs.integerValue;
-	if(type == VariableType::tInteger64) return integerValue64 < rhs.integerValue64;
-	if(type == VariableType::tString) return stringValue < rhs.stringValue;
-	if(type == VariableType::tFloat) return floatValue < rhs.floatValue;
-	if(type == VariableType::tArray)
+    else if(type == VariableType::tInteger) return integerValue < rhs.integerValue;
+    else if(type == VariableType::tInteger64) return integerValue64 < rhs.integerValue64;
+    else if(type == VariableType::tString) return stringValue < rhs.stringValue;
+    else if(type == VariableType::tFloat) return floatValue < rhs.floatValue;
+    else if(type == VariableType::tArray)
 	{
 		if(arrayValue->size() < rhs.arrayValue->size()) return true; else return false;
 	}
-	if(type == VariableType::tStruct)
+    else if(type == VariableType::tStruct)
 	{
 		if(structValue->size() < rhs.structValue->size()) return true; else return false;
 	}
-	if(type == VariableType::tBase64) return stringValue < rhs.stringValue;
+    else if(type == VariableType::tBase64) return stringValue < rhs.stringValue;
 	return false;
 }
 
 bool Variable::operator<=(const Variable& rhs)
 {
 	if(type == VariableType::tBoolean) return booleanValue <= rhs.booleanValue;
-	if(type == VariableType::tInteger) return integerValue <= rhs.integerValue;
-	if(type == VariableType::tInteger64) return integerValue64 <= rhs.integerValue64;
-	if(type == VariableType::tString) return stringValue <= rhs.stringValue;
-	if(type == VariableType::tFloat) return floatValue <= rhs.floatValue;
-	if(type == VariableType::tArray)
+    else if(type == VariableType::tInteger) return integerValue <= rhs.integerValue;
+    else if(type == VariableType::tInteger64) return integerValue64 <= rhs.integerValue64;
+    else if(type == VariableType::tString) return stringValue <= rhs.stringValue;
+    else if(type == VariableType::tFloat) return floatValue <= rhs.floatValue;
+    else if(type == VariableType::tArray)
 	{
 		if(arrayValue->size() <= rhs.arrayValue->size()) return true; else return false;
 	}
-	if(type == VariableType::tStruct)
+    else if(type == VariableType::tStruct)
 	{
 		if(structValue->size() <= rhs.structValue->size()) return true; else return false;
 	}
-	if(type == VariableType::tBase64) return stringValue <= rhs.stringValue;
+    else if(type == VariableType::tBase64) return stringValue <= rhs.stringValue;
 	return false;
 }
 
 bool Variable::operator>(const Variable& rhs)
 {
 	if(type == VariableType::tBoolean) return booleanValue > rhs.booleanValue;
-	if(type == VariableType::tInteger) return integerValue > rhs.integerValue;
-	if(type == VariableType::tInteger64) return integerValue64 > rhs.integerValue64;
-	if(type == VariableType::tString) return stringValue > rhs.stringValue;
-	if(type == VariableType::tFloat) return floatValue > rhs.floatValue;
-	if(type == VariableType::tArray)
+    else if(type == VariableType::tInteger) return integerValue > rhs.integerValue;
+    else if(type == VariableType::tInteger64) return integerValue64 > rhs.integerValue64;
+    else if(type == VariableType::tString) return stringValue > rhs.stringValue;
+    else if(type == VariableType::tFloat) return floatValue > rhs.floatValue;
+    else if(type == VariableType::tArray)
 	{
 		if(arrayValue->size() > rhs.arrayValue->size()) return true; else return false;
 	}
-	if(type == VariableType::tStruct)
+    else if(type == VariableType::tStruct)
 	{
 		if(structValue->size() > rhs.structValue->size()) return true; else return false;
 	}
-	if(type == VariableType::tBase64) return stringValue > rhs.stringValue;
+    else if(type == VariableType::tBase64) return stringValue > rhs.stringValue;
 	return false;
 }
 
 bool Variable::operator>=(const Variable& rhs)
 {
 	if(type == VariableType::tBoolean) return booleanValue >= rhs.booleanValue;
-	if(type == VariableType::tInteger) return integerValue >= rhs.integerValue;
-	if(type == VariableType::tInteger64) return integerValue64 >= rhs.integerValue64;
-	if(type == VariableType::tString) return stringValue >= rhs.stringValue;
-	if(type == VariableType::tFloat) return floatValue >= rhs.floatValue;
-	if(type == VariableType::tArray)
+    else if(type == VariableType::tInteger) return integerValue >= rhs.integerValue;
+    else if(type == VariableType::tInteger64) return integerValue64 >= rhs.integerValue64;
+    else if(type == VariableType::tString) return stringValue >= rhs.stringValue;
+    else if(type == VariableType::tFloat) return floatValue >= rhs.floatValue;
+    else if(type == VariableType::tArray)
 	{
 		if(arrayValue->size() >= rhs.arrayValue->size()) return true; else return false;
 	}
-	if(type == VariableType::tStruct)
+    else if(type == VariableType::tStruct)
 	{
 		if(structValue->size() >= rhs.structValue->size()) return true; else return false;
 	}
-	if(type == VariableType::tBase64) return stringValue >= rhs.stringValue;
+    else if(type == VariableType::tBase64) return stringValue >= rhs.stringValue;
 	return false;
 }
 

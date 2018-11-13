@@ -89,6 +89,16 @@ public:
 	virtual void variableEvent(std::string source, uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
 
     /**
+     * Mustn't block.
+     */
+    virtual void flowVariableEvent(std::string variable, PVariable value) {}
+
+    /**
+     * Mustn't block.
+     */
+    virtual void globalVariableEvent(std::string variable, PVariable value) {}
+
+    /**
 	 * Mustn't block.
 	 */
     virtual PVariable getNodeVariable(std::string variable);

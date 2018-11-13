@@ -127,6 +127,10 @@ public:
 		void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
 		void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
 		void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
+        void setGetFlowData(std::function<PVariable(std::string, std::string)> value) { _getFlowData.swap(value); }
+        void setSetFlowData(std::function<void(std::string, std::string, PVariable)> value) { _setFlowData.swap(value); }
+        void setGetGlobalData(std::function<PVariable(std::string)> value) { _getGlobalData.swap(value); }
+        void setSetGlobalData(std::function<void(std::string, PVariable)> value) { _setGlobalData.swap(value); }
 		void setSetInternalMessage(std::function<void(std::string, PVariable)> value) { _setInternalMessage.swap(value); }
 		void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
 	// }}}
@@ -194,6 +198,10 @@ private:
 	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
 	std::function<PVariable(std::string, std::string)> _getNodeData;
 	std::function<void(std::string, std::string, PVariable)> _setNodeData;
+    std::function<PVariable(std::string, std::string)> _getFlowData;
+    std::function<void(std::string, std::string, PVariable)> _setFlowData;
+    std::function<PVariable(std::string)> _getGlobalData;
+    std::function<void(std::string, PVariable)> _setGlobalData;
 	std::function<void(std::string, PVariable)> _setInternalMessage;
 	std::function<PVariable(std::string, std::string)> _getConfigParameter;
 

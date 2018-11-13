@@ -50,6 +50,10 @@ INode::~INode()
 	_log = std::function<void(std::string, int32_t, std::string)>();
 	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
+    _subscribeFlow = std::function<void(std::string, std::string)>();
+    _unsubscribeFlow = std::function<void(std::string, std::string)>();
+    _subscribeGlobal = std::function<void(std::string)>();
+    _unsubscribeGlobal = std::function<void(std::string)>();
 	_output = std::function<void(std::string, uint32_t, PVariable, bool)>();
 	_invoke = std::function<PVariable(std::string, PArray)>();
 	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
@@ -78,6 +82,26 @@ void INode::subscribePeer(uint64_t peerId, int32_t channel, std::string variable
 void INode::unsubscribePeer(uint64_t peerId, int32_t channel, std::string variable)
 {
 	if(_unsubscribePeer) _unsubscribePeer(_id, peerId, channel, variable);
+}
+
+void INode::subscribeFlow()
+{
+    if(_subscribeFlow) _subscribeFlow(_id, _flowId);
+}
+
+void INode::unsubscribeFlow()
+{
+    if(_unsubscribeFlow) _unsubscribeFlow(_id, _flowId);
+}
+
+void INode::subscribeGlobal()
+{
+    if(_subscribeGlobal) _subscribeGlobal(_id);
+}
+
+void INode::unsubscribeGlobal()
+{
+    if(_unsubscribeGlobal) _unsubscribeGlobal(_id);
 }
 
 void INode::output(uint32_t index, PVariable message, bool synchronous)

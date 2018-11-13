@@ -91,7 +91,7 @@ public:
     /**
      * Mustn't block.
      */
-    virtual void flowVariableEvent(std::string variable, PVariable value) {}
+    virtual void flowVariableEvent(std::string flowId, std::string variable, PVariable value) {}
 
     /**
      * Mustn't block.
@@ -117,6 +117,10 @@ public:
 		void setLog(std::function<void(std::string, int32_t, std::string)> value);
 		void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
 		void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
+        void setSubscribeFlow(std::function<void(std::string, std::string)> value) { _subscribeFlow.swap(value); }
+        void setUnsubscribeFlow(std::function<void(std::string, std::string)> value) { _unsubscribeFlow.swap(value); }
+        void setSubscribeGlobal(std::function<void(std::string)> value) { _subscribeGlobal.swap(value); }
+        void setUnsubscribeGlobal(std::function<void(std::string)> value) { _unsubscribeGlobal.swap(value); }
 		void setOutput(std::function<void(std::string, uint32_t, PVariable, bool)> value) { _output.swap(value); }
 		void setInvoke(std::function<PVariable(std::string, PArray)> value) { _invoke.swap(value); }
 		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray, bool)> value) { _invokeNodeMethod.swap(value); }
@@ -157,6 +161,10 @@ protected:
 	void log(int32_t logLevel, std::string message);
 	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
 	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
+    void subscribeFlow();
+    void unsubscribeFlow();
+    void subscribeGlobal();
+    void unsubscribeGlobal();
 	void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
 	PVariable invoke(std::string methodName, PArray parameters);
 	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters, bool);
@@ -176,6 +184,10 @@ private:
 	std::function<void(std::string, int32_t, std::string)> _log;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
 	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
+    std::function<void(std::string, std::string)> _subscribeFlow;
+    std::function<void(std::string, std::string)> _unsubscribeFlow;
+    std::function<void(std::string)> _subscribeGlobal;
+    std::function<void(std::string)> _unsubscribeGlobal;
 	std::function<void(std::string, uint32_t, PVariable, bool)> _output;
 	std::function<PVariable(std::string, PArray)> _invoke;
 	std::function<PVariable(std::string, std::string, PArray, bool)> _invokeNodeMethod;

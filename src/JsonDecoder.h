@@ -35,6 +35,7 @@
 #include "Variable.h"
 #include "Math.h"
 #include <cmath>
+#include <codecvt>
 
 namespace Flows
 {

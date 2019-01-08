@@ -50,6 +50,10 @@ INode::~INode()
 	_log = std::function<void(std::string, int32_t, std::string)>();
 	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
 	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
+    _subscribeFlow = std::function<void(std::string, std::string)>();
+    _unsubscribeFlow = std::function<void(std::string, std::string)>();
+    _subscribeGlobal = std::function<void(std::string)>();
+    _unsubscribeGlobal = std::function<void(std::string)>();
 	_output = std::function<void(std::string, uint32_t, PVariable, bool)>();
 	_invoke = std::function<PVariable(std::string, PArray)>();
 	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
@@ -78,6 +82,26 @@ void INode::subscribePeer(uint64_t peerId, int32_t channel, std::string variable
 void INode::unsubscribePeer(uint64_t peerId, int32_t channel, std::string variable)
 {
 	if(_unsubscribePeer) _unsubscribePeer(_id, peerId, channel, variable);
+}
+
+void INode::subscribeFlow()
+{
+    if(_subscribeFlow) _subscribeFlow(_id, _flowId);
+}
+
+void INode::unsubscribeFlow()
+{
+    if(_unsubscribeFlow) _unsubscribeFlow(_id, _flowId);
+}
+
+void INode::subscribeGlobal()
+{
+    if(_subscribeGlobal) _subscribeGlobal(_id);
+}
+
+void INode::unsubscribeGlobal()
+{
+    if(_unsubscribeGlobal) _unsubscribeGlobal(_id);
 }
 
 void INode::output(uint32_t index, PVariable message, bool synchronous)
@@ -127,24 +151,24 @@ void INode::setNodeData(std::string key, PVariable value)
 
 PVariable INode::getFlowData(std::string key)
 {
-	if(_getNodeData) return _getNodeData(_flowId, key);
+	if(_getFlowData) return _getFlowData(_flowId, key);
 	return Variable::createError(-32500, "No callback method set.");
 }
 
 void INode::setFlowData(std::string key, PVariable value)
 {
-	if(_setNodeData) _setNodeData(_flowId, key, value);
+	if(_setFlowData) _setFlowData(_flowId, key, value);
 }
 
 PVariable INode::getGlobalData(std::string key)
 {
-	if(_getNodeData) return _getNodeData("global", key);
+	if(_getGlobalData) return _getGlobalData(key);
 	return Variable::createError(-32500, "No callback method set.");
 }
 
 void INode::setGlobalData(std::string key, PVariable value)
 {
-	if(_setNodeData) _setNodeData("global", key, value);
+	if(_setGlobalData) _setGlobalData(key, value);
 }
 
 void INode::setInternalMessage(PVariable message)

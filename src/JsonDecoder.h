@@ -35,7 +35,9 @@
 #include "Variable.h"
 #include "Math.h"
 #include <cmath>
+#if __GNUC__ > 4
 #include <codecvt>
+#endif
 
 namespace Flows
 {

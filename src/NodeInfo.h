@@ -1,4 +1,4 @@
-/* Copyright 2013-2017 Sathya Laufer
+/* Copyright 2013-2019 Homegear GmbH
  *
  * libhomegear-base is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License as
@@ -46,6 +46,7 @@ class NodeInfo
 {
 public:
 	std::string id;
+	std::string flowId;
 	std::string nodeNamespace;
 	std::string type;
 	PVariable info;

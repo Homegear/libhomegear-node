@@ -1,4 +1,4 @@
-/* Copyright 2013-2017 Sathya Laufer
+/* Copyright 2013-2019 Homegear GmbH
  *
  * libhomegear-base is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License as
@@ -43,6 +43,7 @@ PVariable NodeInfo::serialize()
 {
 	PVariable info = std::make_shared<Variable>(VariableType::tStruct);
 	info->structValue->emplace("id", std::make_shared<Variable>(id));
+	info->structValue->emplace("flowId", std::make_shared<Variable>(flowId));
 	info->structValue->emplace("namespace", std::make_shared<Variable>(nodeNamespace));
 	info->structValue->emplace("type", std::make_shared<Variable>(type));
 	info->structValue->emplace("info", this->info);

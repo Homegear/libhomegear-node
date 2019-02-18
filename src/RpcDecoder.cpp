@@ -29,6 +29,7 @@
 */
 
 #include "RpcDecoder.h"
+#include "Math.h"
 
 namespace Flows
 {
@@ -163,143 +164,186 @@ VariableType RpcDecoder::decodeType(std::vector<uint8_t>& packet, uint32_t& posi
 
 std::shared_ptr<Variable> RpcDecoder::decodeParameter(std::vector<char>& packet, uint32_t& position)
 {
-	VariableType type = decodeType(packet, position);
-	std::shared_ptr<Variable> variable = std::make_shared<Variable>(type);
-	if(variable->type == VariableType::tVoid)
-	{
-		//Nothing
-	}
-	else if(type == VariableType::tString || type == VariableType::tBase64)
-	{
-		variable->stringValue = _decoder->decodeString(packet, position);
-	}
-	else if(type == VariableType::tInteger)
-	{
-		variable->integerValue = _decoder->decodeInteger(packet, position);
-		variable->integerValue64 = variable->integerValue;
-	}
-	else if(type == VariableType::tInteger64)
-	{
-		variable->integerValue64 = _decoder->decodeInteger64(packet, position);
-		variable->integerValue = (int32_t)variable->integerValue64;
-	}
-	else if(type == VariableType::tFloat)
-	{
-		variable->floatValue = _decoder->decodeFloat(packet, position);
-	}
-	else if(type == VariableType::tBoolean)
-	{
-		variable->booleanValue = _decoder->decodeBoolean(packet, position);
-	}
-	else if(type == VariableType::tBinary)
-	{
-		variable->binaryValue = _decoder->decodeBinary(packet, position);
-	}
-	else if(type == VariableType::tArray)
-	{
-		variable->arrayValue = decodeArray(packet, position);
-	}
-	else if(type == VariableType::tStruct)
-	{
-		variable->structValue = decodeStruct(packet, position);
-		if(variable->structValue->size() == 2 && variable->structValue->find("faultCode") != variable->structValue->end() && variable->structValue->find("faultString") != variable->structValue->end())
-		{
-			variable->errorStruct = true;
-		}
-	}
-	return variable;
+    VariableType type = decodeType(packet, position);
+    std::shared_ptr<Variable> variable = std::make_shared<Variable>(type);
+    if(type == VariableType::tVoid)
+    {
+        //Nothing
+    }
+    else if(type == VariableType::tString || type == VariableType::tBase64)
+    {
+        variable->stringValue = _decoder->decodeString(packet, position);
+        variable->integerValue64 = Math::getNumber64(variable->stringValue);
+        variable->integerValue = (int32_t)variable->integerValue64;
+        variable->booleanValue = !variable->stringValue.empty() && variable->stringValue != "0" && variable->stringValue != "false" && variable->stringValue != "f";
+
+    }
+    else if(type == VariableType::tInteger)
+    {
+        variable->integerValue = _decoder->decodeInteger(packet, position);
+        variable->integerValue64 = variable->integerValue;
+        variable->booleanValue = (bool)variable->integerValue;
+        variable->floatValue = variable->integerValue;
+    }
+    else if(type == VariableType::tInteger64)
+    {
+        variable->integerValue64 = _decoder->decodeInteger64(packet, position);
+        variable->integerValue = (int32_t)variable->integerValue64;
+        variable->booleanValue = (bool)variable->integerValue64;
+        variable->floatValue = variable->integerValue64;
+    }
+    else if(type == VariableType::tFloat)
+    {
+        variable->floatValue = _decoder->decodeFloat(packet, position);
+        variable->integerValue = (int32_t)std::lround(variable->floatValue);
+        variable->integerValue64 = std::llround(variable->floatValue);
+        variable->booleanValue = (bool)variable->floatValue;
+    }
+    else if(type == VariableType::tBoolean)
+    {
+        variable->booleanValue = _decoder->decodeBoolean(packet, position);
+        variable->integerValue = (int32_t)variable->booleanValue;
+        variable->integerValue64 = (int64_t)variable->booleanValue;
+    }
+    else if(type == VariableType::tBinary)
+    {
+        variable->binaryValue = _decoder->decodeBinary(packet, position);
+    }
+    else if(type == VariableType::tArray)
+    {
+        variable->arrayValue = decodeArray(packet, position);
+    }
+    else if(type == VariableType::tStruct)
+    {
+        variable->structValue = decodeStruct(packet, position);
+        if(variable->structValue->size() == 2 && variable->structValue->find("faultCode") != variable->structValue->end() && variable->structValue->find("faultString") != variable->structValue->end())
+        {
+            variable->errorStruct = true;
+        }
+    }
+    return variable;
 }
 
 std::shared_ptr<Variable> RpcDecoder::decodeParameter(std::vector<uint8_t>& packet, uint32_t& position)
 {
-	VariableType type = decodeType(packet, position);
-	std::shared_ptr<Variable> variable = std::make_shared<Variable>(type);
-	if(variable->type == VariableType::tVoid)
-	{
-		//Nothing
-	}
-	else if(type == VariableType::tString || type == VariableType::tBase64)
-	{
-		variable->stringValue = _decoder->decodeString(packet, position);
-	}
-	else if(type == VariableType::tInteger)
-	{
-		variable->integerValue = _decoder->decodeInteger(packet, position);
-		variable->integerValue64 = variable->integerValue;
-	}
-	else if(type == VariableType::tInteger64)
-	{
-		variable->integerValue64 = _decoder->decodeInteger64(packet, position);
-		variable->integerValue = (int32_t)variable->integerValue64;
-	}
-	else if(type == VariableType::tFloat)
-	{
-		variable->floatValue = _decoder->decodeFloat(packet, position);
-	}
-	else if(type == VariableType::tBoolean)
-	{
-		variable->booleanValue = _decoder->decodeBoolean(packet, position);
-	}
-	else if(type == VariableType::tBinary)
-	{
-		variable->binaryValue = _decoder->decodeBinary(packet, position);
-	}
-	else if(type == VariableType::tArray)
-	{
-		variable->arrayValue = decodeArray(packet, position);
-	}
-	else if(type == VariableType::tStruct)
-	{
-		variable->structValue = decodeStruct(packet, position);
-		if(variable->structValue->size() == 2 && variable->structValue->find("faultCode") != variable->structValue->end() && variable->structValue->find("faultString") != variable->structValue->end())
-		{
-			variable->errorStruct = true;
-		}
-	}
-	return variable;
+    VariableType type = decodeType(packet, position);
+    std::shared_ptr<Variable> variable = std::make_shared<Variable>(type);
+    if(type == VariableType::tVoid)
+    {
+        //Nothing
+    }
+    else if(type == VariableType::tString || type == VariableType::tBase64)
+    {
+        variable->stringValue = _decoder->decodeString(packet, position);
+        variable->integerValue64 = Math::getNumber64(variable->stringValue);
+        variable->integerValue = (int32_t)variable->integerValue64;
+        variable->booleanValue = !variable->stringValue.empty() && variable->stringValue != "0" && variable->stringValue != "false" && variable->stringValue != "f";
+
+    }
+    else if(type == VariableType::tInteger)
+    {
+        variable->integerValue = _decoder->decodeInteger(packet, position);
+        variable->integerValue64 = variable->integerValue;
+        variable->booleanValue = (bool)variable->integerValue;
+        variable->floatValue = variable->integerValue;
+    }
+    else if(type == VariableType::tInteger64)
+    {
+        variable->integerValue64 = _decoder->decodeInteger64(packet, position);
+        variable->integerValue = (int32_t)variable->integerValue64;
+        variable->booleanValue = (bool)variable->integerValue64;
+        variable->floatValue = variable->integerValue64;
+    }
+    else if(type == VariableType::tFloat)
+    {
+        variable->floatValue = _decoder->decodeFloat(packet, position);
+        variable->integerValue = (int32_t)std::lround(variable->floatValue);
+        variable->integerValue64 = std::llround(variable->floatValue);
+        variable->booleanValue = (bool)variable->floatValue;
+    }
+    else if(type == VariableType::tBoolean)
+    {
+        variable->booleanValue = _decoder->decodeBoolean(packet, position);
+        variable->integerValue = (int32_t)variable->booleanValue;
+        variable->integerValue64 = (int64_t)variable->booleanValue;
+    }
+    else if(type == VariableType::tBinary)
+    {
+        variable->binaryValue = _decoder->decodeBinary(packet, position);
+    }
+    else if(type == VariableType::tArray)
+    {
+        variable->arrayValue = decodeArray(packet, position);
+    }
+    else if(type == VariableType::tStruct)
+    {
+        variable->structValue = decodeStruct(packet, position);
+        if(variable->structValue->size() == 2 && variable->structValue->find("faultCode") != variable->structValue->end() && variable->structValue->find("faultString") != variable->structValue->end())
+        {
+            variable->errorStruct = true;
+        }
+    }
+    return variable;
 }
 
 void RpcDecoder::decodeParameter(PVariable& variable, uint32_t& position)
 {
-	variable->type = decodeType(variable->binaryValue, position);
-	if(variable->type == VariableType::tVoid)
-	{
-		//Nothing
-	}
-	else if(variable->type == VariableType::tString || variable->type == VariableType::tBase64)
-	{
-		variable->stringValue = _decoder->decodeString(variable->binaryValue, position);
-	}
-	else if(variable->type == VariableType::tInteger)
-	{
-		variable->integerValue = _decoder->decodeInteger(variable->binaryValue, position);
-		variable->integerValue64 = variable->integerValue;
-	}
-	else if(variable->type == VariableType::tInteger64)
-	{
-		variable->integerValue64 = _decoder->decodeInteger64(variable->binaryValue, position);
-		variable->integerValue = (int32_t)variable->integerValue64;
-	}
-	else if(variable->type == VariableType::tFloat)
-	{
-		variable->floatValue = _decoder->decodeFloat(variable->binaryValue, position);
-	}
-	else if(variable->type == VariableType::tBoolean)
-	{
-		variable->booleanValue = _decoder->decodeBoolean(variable->binaryValue, position);
-	}
-	else if(variable->type == VariableType::tBinary)
-	{
-		variable->binaryValue = _decoder->decodeBinary(variable->binaryValue, position);
-	}
-	else if(variable->type == VariableType::tArray)
-	{
-		variable->arrayValue = decodeArray(variable->binaryValue, position);
-	}
-	else if(variable->type == VariableType::tStruct)
-	{
-		variable->structValue = decodeStruct(variable->binaryValue, position);
-	}
+    variable->type = decodeType(variable->binaryValue, position);
+    if(variable->type == VariableType::tVoid)
+    {
+        //Nothing
+    }
+    else if(variable->type == VariableType::tString || variable->type == VariableType::tBase64)
+    {
+        variable->stringValue = _decoder->decodeString(variable->binaryValue, position);
+        variable->integerValue64 = Math::getNumber64(variable->stringValue);
+        variable->integerValue = (int32_t)variable->integerValue64;
+        variable->booleanValue = !variable->stringValue.empty() && variable->stringValue != "0" && variable->stringValue != "false" && variable->stringValue != "f";
+
+    }
+    else if(variable->type == VariableType::tInteger)
+    {
+        variable->integerValue = _decoder->decodeInteger(variable->binaryValue, position);
+        variable->integerValue64 = variable->integerValue;
+        variable->booleanValue = (bool)variable->integerValue;
+        variable->floatValue = variable->integerValue;
+    }
+    else if(variable->type == VariableType::tInteger64)
+    {
+        variable->integerValue64 = _decoder->decodeInteger64(variable->binaryValue, position);
+        variable->integerValue = (int32_t)variable->integerValue64;
+        variable->booleanValue = (bool)variable->integerValue64;
+        variable->floatValue = variable->integerValue64;
+    }
+    else if(variable->type == VariableType::tFloat)
+    {
+        variable->floatValue = _decoder->decodeFloat(variable->binaryValue, position);
+        variable->integerValue = (int32_t)std::lround(variable->floatValue);
+        variable->integerValue64 = std::llround(variable->floatValue);
+        variable->booleanValue = (bool)variable->floatValue;
+    }
+    else if(variable->type == VariableType::tBoolean)
+    {
+        variable->booleanValue = _decoder->decodeBoolean(variable->binaryValue, position);
+        variable->integerValue = (int32_t)variable->booleanValue;
+        variable->integerValue64 = (int64_t)variable->booleanValue;
+    }
+    else if(variable->type == VariableType::tBinary)
+    {
+        variable->binaryValue = _decoder->decodeBinary(variable->binaryValue, position);
+    }
+    else if(variable->type == VariableType::tArray)
+    {
+        variable->arrayValue = decodeArray(variable->binaryValue, position);
+    }
+    else if(variable->type == VariableType::tStruct)
+    {
+        variable->structValue = decodeStruct(variable->binaryValue, position);
+        if(variable->structValue->size() == 2 && variable->structValue->find("faultCode") != variable->structValue->end() && variable->structValue->find("faultString") != variable->structValue->end())
+        {
+            variable->errorStruct = true;
+        }
+    }
 }
 
 PArray RpcDecoder::decodeArray(std::vector<char>& packet, uint32_t& position)

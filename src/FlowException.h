@@ -41,12 +41,12 @@ namespace Flows
 class FlowException : public std::exception
 {
     public:
-        explicit FlowException(std::string message) {  _message = message; }
+        explicit FlowException(const std::string& message) {  _message = message.c_str(); }
         virtual ~FlowException() = default;
 
-        const char* what() const noexcept override { return _message.c_str(); }
+        const char* what() const noexcept override { return _message; }
     protected:
-        std::string _message;
+        const char* _message = nullptr;
 };
 }
 #endif

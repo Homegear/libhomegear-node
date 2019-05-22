@@ -48,7 +48,7 @@ public:
 	/**
 	 * The main constructor.
 	 */
-	Output(std::string& nodeId, std::function<void(std::string, int32_t, std::string)>* logMethod);
+	Output(std::string& nodeId, std::function<void(const std::string&, int32_t, const std::string&)>* logMethod);
 
 	/**
 	 * The destructor.
@@ -68,7 +68,7 @@ public:
      *
      * @param value The new log function.
      */
-    void setLog(std::function<void(std::string, int32_t, std::string)>* value) { _log = value; }
+    void setLog(std::function<void(const std::string&, int32_t, const std::string&)>* value) { _log = value; }
 
 	/**
 	 * Prints an error message with filename, line number and function name.
@@ -160,7 +160,7 @@ public:
 	 */
 private:
 	std::string _nodeId;
-	std::function<void(std::string, int32_t, std::string)>* _log = nullptr;
+	std::function<void(const std::string&, int32_t, const std::string&)>* _log = nullptr;
 };
 }
 #endif

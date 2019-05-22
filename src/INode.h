@@ -49,13 +49,15 @@ class INode
 {
 public:
 	INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected);
+    INode(const INode&) = delete;
+    INode& operator=(const INode&) = delete;
 	virtual ~INode();
 
 	std::string getNamespace() { return _namespace; }
 	std::string getType() { return _type; }
 	std::string getPath() { return _path; }
 	std::string getFlowId() { return _flowId; }
-	void setFlowId(std::string value) { _flowId = value; }
+	void setFlowId(const std::string& value) { _flowId = value; }
 	std::string getId() { return _id; }
 	void setId(std::string value) { _id = value; if(_out) _out->setNodeId(value); }
 	std::mutex& getInputMutex() { return _inputMutex; }
@@ -101,12 +103,12 @@ public:
     /**
 	 * Mustn't block.
 	 */
-    virtual PVariable getNodeVariable(std::string variable);
+    virtual PVariable getNodeVariable(const std::string& variable);
 
 	/**
 	 * Mustn't block.
 	 */
-	virtual void setNodeVariable(std::string variable, PVariable value);
+	virtual void setNodeVariable(const std::string& variable, PVariable value);
 
 	/**
 	 * Mustn't block.
@@ -114,25 +116,25 @@ public:
 	virtual PVariable getConfigParameterIncoming(std::string name) { return std::make_shared<Flows::Variable>(); }
 
 	// {{{ Internal methods
-		void setLog(std::function<void(std::string, int32_t, std::string)> value);
-		void setSubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _subscribePeer.swap(value); }
-		void setUnsubscribePeer(std::function<void(std::string, uint64_t, int32_t, std::string)> value) { _unsubscribePeer.swap(value); }
-        void setSubscribeFlow(std::function<void(std::string, std::string)> value) { _subscribeFlow.swap(value); }
-        void setUnsubscribeFlow(std::function<void(std::string, std::string)> value) { _unsubscribeFlow.swap(value); }
-        void setSubscribeGlobal(std::function<void(std::string)> value) { _subscribeGlobal.swap(value); }
-        void setUnsubscribeGlobal(std::function<void(std::string)> value) { _unsubscribeGlobal.swap(value); }
-		void setOutput(std::function<void(std::string, uint32_t, PVariable, bool)> value) { _output.swap(value); }
-		void setInvoke(std::function<PVariable(std::string, PArray)> value) { _invoke.swap(value); }
-		void setInvokeNodeMethod(std::function<PVariable(std::string, std::string, PArray, bool)> value) { _invokeNodeMethod.swap(value); }
-		void setNodeEvent(std::function<void(std::string, std::string, PVariable)> value) { _nodeEvent.swap(value); }
-		void setGetNodeData(std::function<PVariable(std::string, std::string)> value) { _getNodeData.swap(value); }
-		void setSetNodeData(std::function<void(std::string, std::string, PVariable)> value) { _setNodeData.swap(value); }
-        void setGetFlowData(std::function<PVariable(std::string, std::string)> value) { _getFlowData.swap(value); }
-        void setSetFlowData(std::function<void(std::string, std::string, PVariable)> value) { _setFlowData.swap(value); }
-        void setGetGlobalData(std::function<PVariable(std::string)> value) { _getGlobalData.swap(value); }
-        void setSetGlobalData(std::function<void(std::string, PVariable)> value) { _setGlobalData.swap(value); }
-		void setSetInternalMessage(std::function<void(std::string, PVariable)> value) { _setInternalMessage.swap(value); }
-		void setGetConfigParameter(std::function<PVariable(std::string, std::string)> value) { _getConfigParameter.swap(value); }
+		void setLog(std::function<void(const std::string&, int32_t, const std::string&)> value);
+		void setSubscribePeer(std::function<void(const std::string&, uint64_t, int32_t, const std::string&)> value) { _subscribePeer.swap(value); }
+		void setUnsubscribePeer(std::function<void(const std::string&, uint64_t, int32_t, const std::string&)> value) { _unsubscribePeer.swap(value); }
+        void setSubscribeFlow(std::function<void(const std::string&, const std::string&)> value) { _subscribeFlow.swap(value); }
+        void setUnsubscribeFlow(std::function<void(const std::string&, const std::string&)> value) { _unsubscribeFlow.swap(value); }
+        void setSubscribeGlobal(std::function<void(const std::string&)> value) { _subscribeGlobal.swap(value); }
+        void setUnsubscribeGlobal(std::function<void(const std::string&)> value) { _unsubscribeGlobal.swap(value); }
+		void setOutput(std::function<void(const std::string&, uint32_t, PVariable, bool)> value) { _output.swap(value); }
+		void setInvoke(std::function<PVariable(const std::string&, PArray)> value) { _invoke.swap(value); }
+		void setInvokeNodeMethod(std::function<PVariable(const std::string&, const std::string&, PArray, bool)> value) { _invokeNodeMethod.swap(value); }
+		void setNodeEvent(std::function<void(const std::string&, const std::string&, PVariable)> value) { _nodeEvent.swap(value); }
+		void setGetNodeData(std::function<PVariable(const std::string&, const std::string&)> value) { _getNodeData.swap(value); }
+		void setSetNodeData(std::function<void(const std::string&, const std::string&, PVariable)> value) { _setNodeData.swap(value); }
+        void setGetFlowData(std::function<PVariable(const std::string&, const std::string&)> value) { _getFlowData.swap(value); }
+        void setSetFlowData(std::function<void(const std::string&, const std::string&, PVariable)> value) { _setFlowData.swap(value); }
+        void setGetGlobalData(std::function<PVariable(const std::string&)> value) { _getGlobalData.swap(value); }
+        void setSetGlobalData(std::function<void(const std::string&, PVariable)> value) { _setGlobalData.swap(value); }
+		void setSetInternalMessage(std::function<void(const std::string&, PVariable)> value) { _setInternalMessage.swap(value); }
+		void setGetConfigParameter(std::function<PVariable(const std::string&, const std::string&)> value) { _getConfigParameter.swap(value); }
 	// }}}
 
 	/**
@@ -147,7 +149,7 @@ public:
 	/**
 	 * Executes local RPC method. Mustn't block.
 	 */
-	virtual PVariable invokeLocal(std::string methodName, PArray parameters);
+	virtual PVariable invokeLocal(const std::string& methodName, PArray parameters);
 protected:
     std::shared_ptr<Output> _out;
 	std::string _path;
@@ -162,51 +164,50 @@ protected:
 	 */
 	std::map<std::string, std::function<PVariable(PArray parameters)>> _localRpcMethods;
 
-	void log(int32_t logLevel, std::string message);
-	void subscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
-	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, std::string variable = "");
+	void log(int32_t logLevel, const std::string& message);
+    void frontendEventLog(const std::string& message);
+	void subscribePeer(uint64_t peerId, int32_t channel = -1, const std::string& variable = "");
+	void unsubscribePeer(uint64_t peerId, int32_t channel = -1, const std::string& variable = "");
     void subscribeFlow();
     void unsubscribeFlow();
     void subscribeGlobal();
     void unsubscribeGlobal();
 	void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
-	PVariable invoke(std::string methodName, PArray parameters);
-	PVariable invokeNodeMethod(std::string nodeId, std::string methodName, PArray parameters, bool);
-	void nodeEvent(std::string topic, PVariable value);
-	PVariable getNodeData(std::string key);
-	void setNodeData(std::string key, PVariable value);
-	PVariable getFlowData(std::string key);
-	void setFlowData(std::string key, PVariable value);
-	PVariable getGlobalData(std::string key);
-	void setGlobalData(std::string key, PVariable value);
+	PVariable invoke(const std::string& methodName, PArray parameters);
+	PVariable invokeNodeMethod(const std::string& nodeId, const std::string& methodName, PArray parameters, bool);
+	void nodeEvent(const std::string& topic, PVariable value);
+	PVariable getNodeData(const std::string& key);
+	void setNodeData(const std::string& key, PVariable value);
+	PVariable getFlowData(const std::string& key);
+	void setFlowData(const std::string& key, PVariable value);
+	PVariable getGlobalData(const std::string& key);
+	void setGlobalData(const std::string& key, PVariable value);
 	void setInternalMessage(PVariable message);
-	PVariable getConfigParameter(std::string nodeId, std::string name);
+	PVariable getConfigParameter(const std::string& nodeId, const std::string& name);
 private:
 	std::atomic_bool _locked;
 	std::atomic_int _referenceCounter;
 	std::mutex _inputMutex;
-	std::function<void(std::string, int32_t, std::string)> _log;
-	std::function<void(std::string, uint64_t, int32_t, std::string)> _subscribePeer;
-	std::function<void(std::string, uint64_t, int32_t, std::string)> _unsubscribePeer;
-    std::function<void(std::string, std::string)> _subscribeFlow;
-    std::function<void(std::string, std::string)> _unsubscribeFlow;
-    std::function<void(std::string)> _subscribeGlobal;
-    std::function<void(std::string)> _unsubscribeGlobal;
-	std::function<void(std::string, uint32_t, PVariable, bool)> _output;
-	std::function<PVariable(std::string, PArray)> _invoke;
-	std::function<PVariable(std::string, std::string, PArray, bool)> _invokeNodeMethod;
-	std::function<void(std::string, std::string, PVariable)> _nodeEvent;
-	std::function<PVariable(std::string, std::string)> _getNodeData;
-	std::function<void(std::string, std::string, PVariable)> _setNodeData;
-    std::function<PVariable(std::string, std::string)> _getFlowData;
-    std::function<void(std::string, std::string, PVariable)> _setFlowData;
-    std::function<PVariable(std::string)> _getGlobalData;
-    std::function<void(std::string, PVariable)> _setGlobalData;
-	std::function<void(std::string, PVariable)> _setInternalMessage;
-	std::function<PVariable(std::string, std::string)> _getConfigParameter;
-
-	INode(const INode&) = delete;
-	INode& operator=(const INode&) = delete;
+	std::function<void(const std::string&, int32_t, const std::string&)> _log;
+    std::function<void(const std::string&, const std::string&)> _frontendEventLog;
+	std::function<void(const std::string&, uint64_t, int32_t, const std::string&)> _subscribePeer;
+	std::function<void(const std::string&, uint64_t, int32_t, const std::string&)> _unsubscribePeer;
+    std::function<void(const std::string&, const std::string&)> _subscribeFlow;
+    std::function<void(const std::string&, const std::string&)> _unsubscribeFlow;
+    std::function<void(const std::string&)> _subscribeGlobal;
+    std::function<void(const std::string&)> _unsubscribeGlobal;
+	std::function<void(const std::string&, uint32_t, PVariable, bool)> _output;
+	std::function<PVariable(const std::string&, PArray)> _invoke;
+	std::function<PVariable(const std::string&, const std::string&, PArray, bool)> _invokeNodeMethod;
+	std::function<void(const std::string&, const std::string&, PVariable)> _nodeEvent;
+	std::function<PVariable(const std::string&, const std::string&)> _getNodeData;
+	std::function<void(const std::string&, const std::string&, PVariable)> _setNodeData;
+    std::function<PVariable(const std::string&, const std::string&)> _getFlowData;
+    std::function<void(const std::string&, const std::string&, PVariable)> _setFlowData;
+    std::function<PVariable(const std::string&)> _getGlobalData;
+    std::function<void(const std::string&, PVariable)> _setGlobalData;
+	std::function<void(const std::string&, PVariable)> _setInternalMessage;
+	std::function<PVariable(const std::string&, const std::string&)> _getConfigParameter;
 };
 
 typedef std::shared_ptr<INode> PINode;

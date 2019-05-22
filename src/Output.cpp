@@ -33,7 +33,7 @@
 namespace Flows
 {
 
-Output::Output(std::string& nodeId, std::function<void(std::string, int32_t, std::string)>* logMethod)
+Output::Output(std::string& nodeId, std::function<void(const std::string&, int32_t, const std::string&)>* logMethod)
 {
 	_nodeId = nodeId;
 	_log = logMethod;

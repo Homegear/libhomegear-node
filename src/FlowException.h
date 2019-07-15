@@ -38,15 +38,15 @@ namespace Flows
 /**
  * Base class for all Flow exceptions
  */
-class FlowException
+class FlowException : public std::exception
 {
     public:
-        FlowException(std::string message) {  _message = message; }
-        virtual ~FlowException() {}
+        explicit FlowException(const std::string& message) {  _message = message.c_str(); }
+        virtual ~FlowException() = default;
 
-        const std::string what() const { return _message; }
+        const char* what() const noexcept override { return _message; }
     protected:
-        std::string _message;
+        const char* _message = nullptr;
 };
 }
 #endif

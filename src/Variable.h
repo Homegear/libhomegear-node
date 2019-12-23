@@ -112,7 +112,7 @@ public:
 	explicit Variable(const char* binaryVal, size_t binaryValSize);
 
 	/**
-	 * Create variable from JSON string.
+	 * Create variable from typed JSON string.
 	 * @param type bool, int, float, string, array or struct.
 	 * @param value The value in JSON format.
 	 */

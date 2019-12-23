@@ -194,7 +194,7 @@ Variable::Variable(const char* binaryVal, size_t binaryValSize) : Variable()
 	binaryValue = std::vector<uint8_t>(binaryVal, binaryVal + binaryValSize);
 }
 
-Variable::Variable(const std::string& typeString, const std::string& jsonValue)
+Variable::Variable(const std::string& typeString, const std::string& jsonValue) : Variable()
 {
     if(typeString == "bool")
     {

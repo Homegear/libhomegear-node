@@ -31,6 +31,7 @@
 #include "Variable.h"
 #include "HelperFunctions.h"
 #include "Math.h"
+#include "JsonDecoder.h"
 
 namespace Flows
 {
@@ -193,8 +194,37 @@ Variable::Variable(const char* binaryVal, size_t binaryValSize) : Variable()
 	binaryValue = std::vector<uint8_t>(binaryVal, binaryVal + binaryValSize);
 }
 
-Variable::~Variable()
+Variable::Variable(const std::string& typeString, const std::string& jsonValue)
 {
+    if(typeString == "bool")
+    {
+        type = VariableType::tBoolean;
+        booleanValue = jsonValue == "true";
+    }
+    else if(typeString == "int")
+    {
+        type = VariableType::tInteger64;
+        integerValue64 = Math::getNumber64(jsonValue);
+        integerValue = (int32_t)integerValue64;
+        floatValue = integerValue64;
+    }
+    else if(typeString == "float")
+    {
+        type = Flows::VariableType::tFloat;
+        floatValue = Flows::Math::getDouble(jsonValue);
+        integerValue = floatValue;
+        integerValue64 = floatValue;
+    }
+    else if(typeString == "string")
+    {
+        type = VariableType::tString;
+        stringValue = jsonValue;
+    }
+    else if(typeString == "array" || typeString == "struct")
+    {
+        auto value = JsonDecoder::decode(jsonValue);
+        *this = *value;
+    }
 }
 
 std::shared_ptr<Variable> Variable::createError(int32_t faultCode, std::string faultString)

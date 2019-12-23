@@ -110,7 +110,14 @@ public:
 	explicit Variable(const uint8_t* binaryVal, size_t binaryValSize);
 	explicit Variable(const std::vector<char>& binaryVal);
 	explicit Variable(const char* binaryVal, size_t binaryValSize);
-	virtual ~Variable();
+
+	/**
+	 * Create variable from JSON string.
+	 * @param type bool, int, float, string, array or struct.
+	 * @param value The value in JSON format.
+	 */
+	explicit Variable(const std::string& typeString, const std::string& jsonValue);
+	virtual ~Variable() = default;
 	static PVariable createError(int32_t faultCode, std::string faultString);
 	std::string print(bool stdout = false, bool stderr = false, bool oneLine = false);
 	static std::string getTypeString(VariableType type);

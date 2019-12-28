@@ -31,6 +31,7 @@
 #include "Variable.h"
 #include "HelperFunctions.h"
 #include "Math.h"
+#include "JsonDecoder.h"
 
 namespace Flows
 {
@@ -193,8 +194,37 @@ Variable::Variable(const char* binaryVal, size_t binaryValSize) : Variable()
 	binaryValue = std::vector<uint8_t>(binaryVal, binaryVal + binaryValSize);
 }
 
-Variable::~Variable()
+Variable::Variable(const std::string& typeString, const std::string& jsonValue) : Variable()
 {
+    if(typeString == "bool")
+    {
+        type = VariableType::tBoolean;
+        booleanValue = jsonValue == "true";
+    }
+    else if(typeString == "int")
+    {
+        type = VariableType::tInteger64;
+        integerValue64 = Math::getNumber64(jsonValue);
+        integerValue = (int32_t)integerValue64;
+        floatValue = integerValue64;
+    }
+    else if(typeString == "float")
+    {
+        type = Flows::VariableType::tFloat;
+        floatValue = Flows::Math::getDouble(jsonValue);
+        integerValue = floatValue;
+        integerValue64 = floatValue;
+    }
+    else if(typeString == "string")
+    {
+        type = VariableType::tString;
+        stringValue = jsonValue;
+    }
+    else if(typeString == "array" || typeString == "struct")
+    {
+        auto value = JsonDecoder::decode(jsonValue);
+        *this = *value;
+    }
 }
 
 std::shared_ptr<Variable> Variable::createError(int32_t faultCode, std::string faultString)
@@ -241,21 +271,24 @@ bool Variable::operator==(const Variable& rhs)
     else if(type == VariableType::tString) return stringValue == rhs.stringValue;
     else if(type == VariableType::tFloat) return floatValue == rhs.floatValue;
     else if(type == VariableType::tArray)
-	{
-		if(arrayValue->size() != rhs.arrayValue->size()) return false;
-		for(std::pair<Array::iterator, Array::iterator> i(arrayValue->begin(), rhs.arrayValue->begin()); i.first != arrayValue->end(); ++i.first, ++i.second)
-		{
-			if(*(i.first) != *(i.second)) return false;
-		}
-	}
+    {
+        if(arrayValue->size() != rhs.arrayValue->size()) return false;
+        for(std::pair<Array::iterator, Array::iterator> i(arrayValue->begin(), rhs.arrayValue->begin()); i.first != arrayValue->end(); ++i.first, ++i.second)
+        {
+            if(**(i.first) != **(i.second)) return false;
+        }
+        return true;
+    }
     else if(type == VariableType::tStruct)
-	{
-		if(structValue->size() != rhs.structValue->size()) return false;
-		for(std::pair<Struct::iterator, Struct::iterator> i(structValue->begin(), rhs.structValue->begin()); i.first != structValue->end(); ++i.first, ++i.second)
-		{
-			if(i.first->first != i.first->first || *(i.second->second) != *(i.second->second)) return false;
-		}
-	}
+    {
+        if(structValue->size() != rhs.structValue->size()) return false;
+        for(auto& element : *structValue)
+        {
+            auto rhsIterator = rhs.structValue->find(element.first);
+            if(rhsIterator == rhs.structValue->end() || *element.second != *rhsIterator->second) return false;
+        }
+        return true;
+    }
     else if(type == VariableType::tBase64) return stringValue == rhs.stringValue;
     else if(type == VariableType::tBinary)
 	{

@@ -32,21 +32,18 @@
 #define FLOWEXCEPTION_H
 
 #include <string>
+#include <stdexcept>
 
 namespace Flows
 {
 /**
  * Base class for all Flow exceptions
  */
-class FlowException : public std::exception
+class FlowException : public std::runtime_error
 {
     public:
-        explicit FlowException(const std::string& message) {  _message = message.c_str(); }
+        explicit FlowException(const std::string& message) : std::runtime_error(message) {};
         virtual ~FlowException() = default;
-
-        const char* what() const noexcept override { return _message; }
-    protected:
-        const char* _message = nullptr;
 };
 }
 #endif

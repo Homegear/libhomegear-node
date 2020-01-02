@@ -103,7 +103,7 @@ public:
     /**
      * Mustn't block.
      */
-    virtual void homegearEvent(const std::string& type, const PVariable& data) {}
+    virtual void homegearEvent(const std::string& type, const PArray& data) {}
 
     /**
 	 * Mustn't block.

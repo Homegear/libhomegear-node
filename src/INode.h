@@ -128,6 +128,8 @@ public:
         void setUnsubscribeFlow(std::function<void(const std::string&, const std::string&)> value) { _unsubscribeFlow.swap(value); }
         void setSubscribeGlobal(std::function<void(const std::string&)> value) { _subscribeGlobal.swap(value); }
         void setUnsubscribeGlobal(std::function<void(const std::string&)> value) { _unsubscribeGlobal.swap(value); }
+        void setSubscribeHomegearEvents(std::function<void(const std::string&)> value) { _subscribeHomegearEvents.swap(value); }
+        void setUnsubscribeHomegearEvents(std::function<void(const std::string&)> value) { _unsubscribeHomegearEvents.swap(value); }
 		void setOutput(std::function<void(const std::string&, uint32_t, PVariable, bool)> value) { _output.swap(value); }
 		void setInvoke(std::function<PVariable(const std::string&, PArray)> value) { _invoke.swap(value); }
 		void setInvokeNodeMethod(std::function<PVariable(const std::string&, const std::string&, PArray, bool)> value) { _invokeNodeMethod.swap(value); }

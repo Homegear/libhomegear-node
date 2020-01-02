@@ -101,6 +101,11 @@ public:
     virtual void globalVariableEvent(std::string variable, PVariable value) {}
 
     /**
+     * Mustn't block.
+     */
+    virtual void homegearEvent(const std::string& type, const PVariable& data) {}
+
+    /**
 	 * Mustn't block.
 	 */
     virtual PVariable getNodeVariable(const std::string& variable);
@@ -172,6 +177,8 @@ protected:
     void unsubscribeFlow();
     void subscribeGlobal();
     void unsubscribeGlobal();
+    void subscribeHomegearEvents();
+    void unsubscribeHomegearEvents();
 	void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
 	PVariable invoke(const std::string& methodName, PArray parameters);
 	PVariable invokeNodeMethod(const std::string& nodeId, const std::string& methodName, PArray parameters, bool);
@@ -196,6 +203,8 @@ private:
     std::function<void(const std::string&, const std::string&)> _unsubscribeFlow;
     std::function<void(const std::string&)> _subscribeGlobal;
     std::function<void(const std::string&)> _unsubscribeGlobal;
+    std::function<void(const std::string&)> _subscribeHomegearEvents;
+    std::function<void(const std::string&)> _unsubscribeHomegearEvents;
 	std::function<void(const std::string&, uint32_t, PVariable, bool)> _output;
 	std::function<PVariable(const std::string&, PArray)> _invoke;
 	std::function<PVariable(const std::string&, const std::string&, PArray, bool)> _invokeNodeMethod;

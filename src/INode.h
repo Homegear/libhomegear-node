@@ -101,6 +101,11 @@ public:
     virtual void globalVariableEvent(std::string variable, PVariable value) {}
 
     /**
+     * Mustn't block.
+     */
+    virtual void homegearEvent(const std::string& type, const PArray& data) {}
+
+    /**
 	 * Mustn't block.
 	 */
     virtual PVariable getNodeVariable(const std::string& variable);
@@ -123,6 +128,8 @@ public:
         void setUnsubscribeFlow(std::function<void(const std::string&, const std::string&)> value) { _unsubscribeFlow.swap(value); }
         void setSubscribeGlobal(std::function<void(const std::string&)> value) { _subscribeGlobal.swap(value); }
         void setUnsubscribeGlobal(std::function<void(const std::string&)> value) { _unsubscribeGlobal.swap(value); }
+        void setSubscribeHomegearEvents(std::function<void(const std::string&)> value) { _subscribeHomegearEvents.swap(value); }
+        void setUnsubscribeHomegearEvents(std::function<void(const std::string&)> value) { _unsubscribeHomegearEvents.swap(value); }
 		void setOutput(std::function<void(const std::string&, uint32_t, PVariable, bool)> value) { _output.swap(value); }
 		void setInvoke(std::function<PVariable(const std::string&, PArray)> value) { _invoke.swap(value); }
 		void setInvokeNodeMethod(std::function<PVariable(const std::string&, const std::string&, PArray, bool)> value) { _invokeNodeMethod.swap(value); }
@@ -172,6 +179,8 @@ protected:
     void unsubscribeFlow();
     void subscribeGlobal();
     void unsubscribeGlobal();
+    void subscribeHomegearEvents();
+    void unsubscribeHomegearEvents();
 	void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
 	PVariable invoke(const std::string& methodName, PArray parameters);
 	PVariable invokeNodeMethod(const std::string& nodeId, const std::string& methodName, PArray parameters, bool);
@@ -196,6 +205,8 @@ private:
     std::function<void(const std::string&, const std::string&)> _unsubscribeFlow;
     std::function<void(const std::string&)> _subscribeGlobal;
     std::function<void(const std::string&)> _unsubscribeGlobal;
+    std::function<void(const std::string&)> _subscribeHomegearEvents;
+    std::function<void(const std::string&)> _unsubscribeHomegearEvents;
 	std::function<void(const std::string&, uint32_t, PVariable, bool)> _output;
 	std::function<PVariable(const std::string&, PArray)> _invoke;
 	std::function<PVariable(const std::string&, const std::string&, PArray, bool)> _invokeNodeMethod;

@@ -109,6 +109,16 @@ void INode::unsubscribeGlobal()
     if(_unsubscribeGlobal) _unsubscribeGlobal(_id);
 }
 
+void INode::subscribeHomegearEvents()
+{
+    if(_subscribeHomegearEvents) _subscribeHomegearEvents(_id);
+}
+
+void INode::unsubscribeHomegearEvents()
+{
+    if(_unsubscribeHomegearEvents) _unsubscribeHomegearEvents(_id);
+}
+
 void INode::output(uint32_t index, PVariable message, bool synchronous)
 {
 	if(_output) _output(_id, index, std::move(message), synchronous);

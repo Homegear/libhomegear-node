@@ -53,6 +53,7 @@ public:
     INode& operator=(const INode&) = delete;
 	virtual ~INode();
 
+    static std::string version();
 	std::string getNamespace() { return _namespace; }
 	std::string getType() { return _type; }
 	std::string getPath() { return _path; }

@@ -30,6 +30,8 @@
 
 #include "INode.h"
 
+#include "../config.h"
+
 namespace Flows
 {
 
@@ -61,6 +63,11 @@ INode::~INode()
 	_getNodeData = std::function<PVariable(std::string, std::string)>();
 	_setNodeData = std::function<void(std::string, std::string, PVariable)>();
 	_getConfigParameter = std::function<PVariable(std::string, std::string)>();
+}
+
+std::string INode::version()
+{
+    return VERSION;
 }
 
 void INode::setLog(std::function<void(const std::string&, int32_t,const std::string&)> value)

@@ -89,17 +89,17 @@ public:
 	/**
 	 * Mustn't block.
 	 */
-	virtual void variableEvent(std::string source, uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
+	virtual void variableEvent(const std::string& source, uint64_t peerId, int32_t channel, const std::string& variable, const PVariable& value, const PVariable& metadata) {}
 
     /**
      * Mustn't block.
      */
-    virtual void flowVariableEvent(std::string flowId, std::string variable, PVariable value) {}
+    virtual void flowVariableEvent(const std::string& flowId, const std::string& variable, const PVariable& value) {}
 
     /**
      * Mustn't block.
      */
-    virtual void globalVariableEvent(std::string variable, PVariable value) {}
+    virtual void globalVariableEvent(const std::string& variable, const PVariable& value) {}
 
     /**
      * Mustn't block.

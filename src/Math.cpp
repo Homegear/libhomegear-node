@@ -75,6 +75,7 @@ int32_t Math::getNumber(const std::string& s, bool isHex)
 {
 	int32_t xpos = s.find('x');
 	int32_t number = 0;
+    //Don't change to std::stol, because otherwise numbers larger than 0x7FFFFFFF can't be parsed.
 	if(xpos == -1 && !isHex) try { number = std::stoll(s, 0, 10); } catch(...) {}
 	else try { number = std::stoll(s, 0, 16); } catch(...) {}
 	return number;
@@ -99,9 +100,18 @@ uint32_t Math::getUnsignedNumber(const std::string &s, bool isHex)
 {
 	int32_t xpos = s.find('x');
 	uint32_t number = 0;
-	if(xpos == -1 && !isHex) try { number = std::stoull(s, 0, 10); } catch(...) {}
-	else try { number = std::stoull(s, 0, 16); } catch(...) {}
+	if(xpos == -1 && !isHex) try { number = std::stoul(s, 0, 10); } catch(...) {}
+	else try { number = std::stoul(s, 0, 16); } catch(...) {}
 	return number;
+}
+
+uint64_t Math::getUnsignedNumber64(const std::string &s, bool isHex)
+{
+    int32_t xpos = s.find('x');
+    uint32_t number = 0;
+    if(xpos == -1 && !isHex) try { number = std::stoull(s, 0, 10); } catch(...) {}
+    else try { number = std::stoull(s, 0, 16); } catch(...) {}
+    return number;
 }
 
 int32_t Math::getOctalNumber(std::string& s)

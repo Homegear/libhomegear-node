@@ -128,16 +128,53 @@ bool MessageProperty::set(Flows::PVariable& message, Flows::PVariable& value)
         if(_property.at(i).second)
         {
             auto arrayIndex = Math::getUnsignedNumber64(_property.at(i).first);
-            if(arrayIndex >= currentMessage->arrayValue->size()) return false;
-            if((unsigned)i < _property.size() - 1) currentMessage = currentMessage->arrayValue->at(arrayIndex);
-            else currentMessage->arrayValue->at(arrayIndex) = value;
+            if(arrayIndex >= currentMessage->arrayValue->size())
+            {
+                if((unsigned)i < _property.size() - 1)
+                {
+                    Flows::PVariable subElement;
+                    currentMessage->arrayValue->reserve(arrayIndex + 1);
+                    while(arrayIndex >= currentMessage->arrayValue->size())
+                    {
+                        subElement = std::make_shared<Flows::Variable>(_property.at(i + 1).second ? Flows::VariableType::tArray : Flows::VariableType::tStruct);
+                        currentMessage->arrayValue->emplace_back(subElement);
+                    }
+                    currentMessage = subElement;
+                }
+                else
+                {
+                    currentMessage->arrayValue->reserve(arrayIndex + 1);
+                    while(arrayIndex >= currentMessage->arrayValue->size())
+                    {
+                        currentMessage->arrayValue->emplace_back(std::make_shared<Flows::Variable>());
+                    }
+                    currentMessage->arrayValue->emplace_back(value);
+                }
+            }
+            else
+            {
+                if((unsigned)i < _property.size() - 1) currentMessage = currentMessage->arrayValue->at(arrayIndex);
+                else currentMessage->arrayValue->at(arrayIndex) = value;
+            }
         }
         else
         {
             auto messageIterator = currentMessage->structValue->find(_property.at(i).first);
-            if(messageIterator == currentMessage->structValue->end()) return false;
-            if((unsigned)i < _property.size() - 1) currentMessage = messageIterator->second;
-            else messageIterator->second = value;
+            if(messageIterator == currentMessage->structValue->end())
+            {
+                if((unsigned)i < _property.size() - 1)
+                {
+                    auto subElement = std::make_shared<Flows::Variable>(_property.at(i + 1).second ? Flows::VariableType::tArray : Flows::VariableType::tStruct);
+                    currentMessage->structValue->emplace(_property.at(i).first, subElement);
+                    currentMessage = subElement;
+                }
+                else currentMessage->structValue->emplace(_property.at(i).first, value);
+            }
+            else
+            {
+                if((unsigned)i < _property.size() - 1) currentMessage = messageIterator->second;
+                else messageIterator->second = value;
+            }
         }
     }
     return true;

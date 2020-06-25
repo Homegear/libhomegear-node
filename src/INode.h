@@ -72,7 +72,7 @@ public:
 	virtual void stop() {}
 
 	/**
-	 * Wait here until everything is cleaned up. Keep the waiting as short as possible as this method is called serially and synchronouly for all nodes. Join threads here.
+	 * Wait here until everything is cleaned up. Keep the waiting as short as possible as this method is called serially and synchronously for all nodes. Join threads here.
 	 */
 	virtual void waitForStop() {}
 
@@ -160,11 +160,31 @@ public:
 	virtual PVariable invokeLocal(const std::string& methodName, PArray parameters);
 protected:
     std::shared_ptr<Output> _out;
+
+    /**
+     * The full path to the node's files.
+     */
 	std::string _path;
+
+	/**
+	 * The namespace of the node.
+	 */
 	std::string _namespace;
 	std::string _type;
+
+	/**
+	 * The ID of the flow containing the node.
+	 */
 	std::string _flowId;
+
+	/**
+	 * The ID of the node.
+	 */
 	std::string _id;
+
+	/**
+	 * True when a Node-BLUE frontend is currently connected to Homegear.
+	 */
 	const std::atomic_bool* _frontendConnected;
 
 	/**

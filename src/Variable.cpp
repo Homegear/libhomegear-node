@@ -184,7 +184,8 @@ Variable::Variable(const uint8_t* binaryVal, size_t binaryValSize) : Variable()
 
 Variable::Variable(const std::vector<char>& binaryVal) : Variable()
 {
-	type = VariableType::tBinary; binaryValue.clear();
+	type = VariableType::tBinary;
+	binaryValue.clear();
 	binaryValue.insert(binaryValue.end(), binaryVal.begin(), binaryVal.end());
 }
 

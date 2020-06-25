@@ -53,6 +53,7 @@ public:
     INode& operator=(const INode&) = delete;
 	virtual ~INode();
 
+    static std::string version();
 	std::string getNamespace() { return _namespace; }
 	std::string getType() { return _type; }
 	std::string getPath() { return _path; }
@@ -71,7 +72,7 @@ public:
 	virtual void stop() {}
 
 	/**
-	 * Wait here until everything is cleaned up. Keep the waiting as short as possible as this method is called serially and synchronouly for all nodes. Join threads here.
+	 * Wait here until everything is cleaned up. Keep the waiting as short as possible as this method is called serially and synchronously for all nodes. Join threads here.
 	 */
 	virtual void waitForStop() {}
 
@@ -88,17 +89,17 @@ public:
 	/**
 	 * Mustn't block.
 	 */
-	virtual void variableEvent(std::string source, uint64_t peerId, int32_t channel, std::string variable, PVariable value) {}
+	virtual void variableEvent(const std::string& source, uint64_t peerId, int32_t channel, const std::string& variable, const PVariable& value, const PVariable& metadata) {}
 
     /**
      * Mustn't block.
      */
-    virtual void flowVariableEvent(std::string flowId, std::string variable, PVariable value) {}
+    virtual void flowVariableEvent(const std::string& flowId, const std::string& variable, const PVariable& value) {}
 
     /**
      * Mustn't block.
      */
-    virtual void globalVariableEvent(std::string variable, PVariable value) {}
+    virtual void globalVariableEvent(const std::string& variable, const PVariable& value) {}
 
     /**
      * Mustn't block.
@@ -159,11 +160,31 @@ public:
 	virtual PVariable invokeLocal(const std::string& methodName, PArray parameters);
 protected:
     std::shared_ptr<Output> _out;
+
+    /**
+     * The full path to the node's files.
+     */
 	std::string _path;
+
+	/**
+	 * The namespace of the node.
+	 */
 	std::string _namespace;
 	std::string _type;
+
+	/**
+	 * The ID of the flow containing the node.
+	 */
 	std::string _flowId;
+
+	/**
+	 * The ID of the node.
+	 */
 	std::string _id;
+
+	/**
+	 * True when a Node-BLUE frontend is currently connected to Homegear.
+	 */
 	const std::atomic_bool* _frontendConnected;
 
 	/**

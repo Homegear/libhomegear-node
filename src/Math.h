@@ -66,6 +66,7 @@ public:
 	 *
 	 * @see getDouble()
 	 * @see getUnsignedNumber()
+	 * @see getUnsignedNumber64()
 	 * @see getNumber()
 	 * @see getNumber64()
 	 * @see getOctalNumber()
@@ -80,6 +81,7 @@ public:
 	 *
 	 * @see getDouble()
 	 * @see getUnsignedNumber()
+	 * @see getUnsignedNumber64()
 	 * @see getNumber64()
 	 * @see getOctalNumber()
 	 * @param s The string to convert.
@@ -93,6 +95,7 @@ public:
 	 *
 	 * @see getDouble()
 	 * @see getUnsignedNumber()
+	 * @see getUnsignedNumber64()
 	 * @see getNumber()
 	 * @see getNumber64()
 	 * @param s The string to convert.
@@ -104,9 +107,10 @@ public:
 	 * Converts a hexadecimal character to an integer.
 	 *
 	 * @see getDouble()
-	 * @see getUnsignedNumber()
 	 * @see getNumber64()
 	 * @see getOctalNumber()
+	 * @see getUnsignedNumber()
+	 * @see getUnsignedNumber64()
 	 * @param hexChar The hexadecimal character.
 	 * @return Returns the integer or "0" on error.
 	 */
@@ -119,13 +123,28 @@ public:
 	 * @see getNumber()
 	 * @see getNumber64()
 	 * @see getOctalNumber()
+	 * @see getUnsignedNumber64()
 	 * @param s The string to convert.
 	 * @param isHex Set this parameter to "true", if the string is hexadecimal (default false). If the string is prefixed with "0x", it is automatically detected as hexadecimal.
 	 * @return Returns the unsigned integer or "0" on error.
 	 */
 	static uint32_t getUnsignedNumber(const std::string &s, bool isHex = false);
 
-	/*
+    /**
+     * Converts a string (decimal or hexadecimal) to an unsigned integer.
+     *
+     * @see getDouble()
+     * @see getNumber()
+     * @see getNumber64()
+     * @see getOctalNumber()
+     * @see getUnsignedNumber()
+     * @param s The string to convert.
+     * @param isHex Set this parameter to "true", if the string is hexadecimal (default false). If the string is prefixed with "0x", it is automatically detected as hexadecimal.
+     * @return Returns the unsigned integer or "0" on error.
+     */
+    static uint64_t getUnsignedNumber64(const std::string &s, bool isHex = false);
+
+    /*
 	 * Converts a float value to it's IEEE 754 binary32 representation.
 	 *
 	 * @param value The float value to convert.
@@ -161,7 +180,9 @@ public:
 	 * Converts a string to double.
 	 *
 	 * @see getNumber()
+	 * @see getNumber64()
 	 * @see getUnsignedNumber()
+	 * @see getUnsignedNumber64()
 	 * @param s The string to convert to double.
 	 * @return Returns the number or "0" if the conversion was not successful.
 	 */

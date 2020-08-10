@@ -35,20 +35,16 @@
 
 #include <memory>
 
-namespace Flows
-{
+namespace Flows {
 
-class NodeFactory
-{
-public:
-	NodeFactory()
-	{
-	}
-	virtual ~NodeFactory()
-	{
-	}
+class NodeFactory {
+ public:
+  NodeFactory() {
+  }
+  virtual ~NodeFactory() {
+  }
 
-	virtual INode* createNode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected) = 0;
+  virtual INode *createNode(const std::string &path, const std::string &nodeNamespace, const std::string &type, const std::atomic_bool *frontendConnected) = 0;
 };
 
 }

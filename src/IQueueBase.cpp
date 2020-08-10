@@ -32,28 +32,24 @@
 #include "Output.h"
 #include "HelperFunctions.h"
 
-namespace Flows
-{
+namespace Flows {
 
-IQueueBase::IQueueBase(std::shared_ptr<Output>& output, uint32_t queueCount)
-{
-	_out = output;
-	if(queueCount < 1000000) _queueCount = queueCount;
-	_stopProcessingThread.reset(new std::atomic_bool[queueCount]);
+IQueueBase::IQueueBase(std::shared_ptr<Output> &output, uint32_t queueCount) {
+  _out = output;
+  if (queueCount < 1000000) _queueCount = queueCount;
+  _stopProcessingThread.reset(new std::atomic_bool[queueCount]);
 
-	_lastQueueFullError = 0;
-	_droppedEntries = 0;
+  _lastQueueFullError = 0;
+  _droppedEntries = 0;
 }
 
-void IQueueBase::printQueueFullError(std::string message)
-{
-	uint32_t droppedEntries = ++_droppedEntries;
-	if(Flows::HelperFunctions::getTime() - _lastQueueFullError > 10000)
-	{
-		_lastQueueFullError = Flows::HelperFunctions::getTime();
-		_droppedEntries = 0;
-		_out->printError(message + " This message won't repeat for 10 seconds. Dropped outputs since last message: " + std::to_string(droppedEntries));
-	}
+void IQueueBase::printQueueFullError(std::string message) {
+  uint32_t droppedEntries = ++_droppedEntries;
+  if (Flows::HelperFunctions::getTime() - _lastQueueFullError > 10000) {
+    _lastQueueFullError = Flows::HelperFunctions::getTime();
+    _droppedEntries = 0;
+    _out->printError(message + " This message won't repeat for 10 seconds. Dropped outputs since last message: " + std::to_string(droppedEntries));
+  }
 }
 
 }

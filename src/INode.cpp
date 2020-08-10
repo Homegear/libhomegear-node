@@ -30,187 +30,156 @@
 
 #include "INode.h"
 
+#include <utility>
+
 #include "../config.h"
 
-namespace Flows
-{
+namespace Flows {
 
-INode::INode(std::string path, std::string nodeNamespace, std::string type, const std::atomic_bool* frontendConnected)
-{
-	_out = std::make_shared<Output>(_id, nullptr); //_id is empty at this point and will be set through setId()
-	_referenceCounter = 0;
-	_locked = false;
-	_path = path;
-	_namespace = nodeNamespace;
-	_type = type;
-	_frontendConnected = frontendConnected;
+INode::INode(const std::string &path, const std::string &nodeNamespace, const std::string &type, const std::atomic_bool *frontendConnected) {
+  _out = std::make_shared<Output>(_id, nullptr); //_id is empty at this point and will be set through setId()
+  _path = path;
+  _namespace = nodeNamespace;
+  _type = type;
+  _frontendConnected = frontendConnected;
 }
 
-INode::~INode()
-{
-	//Function pointers need to be cleaned up before unloading the module
-	_log = std::function<void(std::string, int32_t, std::string)>();
-	_subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
-	_unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
-    _subscribeFlow = std::function<void(std::string, std::string)>();
-    _unsubscribeFlow = std::function<void(std::string, std::string)>();
-    _subscribeGlobal = std::function<void(std::string)>();
-    _unsubscribeGlobal = std::function<void(std::string)>();
-	_output = std::function<void(std::string, uint32_t, PVariable, bool)>();
-	_invoke = std::function<PVariable(std::string, PArray)>();
-	_invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
-	_nodeEvent = std::function<void(std::string, std::string, PVariable)>();
-	_getNodeData = std::function<PVariable(std::string, std::string)>();
-	_setNodeData = std::function<void(std::string, std::string, PVariable)>();
-	_getConfigParameter = std::function<PVariable(std::string, std::string)>();
+INode::~INode() {
+  //Function pointers need to be cleaned up before unloading the module
+  _log = std::function<void(std::string, int32_t, std::string)>();
+  _subscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
+  _unsubscribePeer = std::function<void(std::string, uint64_t, int32_t, std::string)>();
+  _subscribeFlow = std::function<void(std::string, std::string)>();
+  _unsubscribeFlow = std::function<void(std::string, std::string)>();
+  _subscribeGlobal = std::function<void(std::string)>();
+  _unsubscribeGlobal = std::function<void(std::string)>();
+  _output = std::function<void(std::string, uint32_t, PVariable, bool)>();
+  _invoke = std::function<PVariable(std::string, PArray)>();
+  _invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
+  _nodeEvent = std::function<void(std::string, std::string, PVariable)>();
+  _getNodeData = std::function<PVariable(std::string, std::string)>();
+  _setNodeData = std::function<void(std::string, std::string, PVariable)>();
+  _getConfigParameter = std::function<PVariable(std::string, std::string)>();
 }
 
-std::string INode::version()
-{
-    return VERSION;
+std::string INode::version() {
+  return VERSION;
 }
 
-void INode::setLog(std::function<void(const std::string&, int32_t,const std::string&)> value)
-{
-	_log.swap(value);
-	if(_out) _out->setLog(&_log);
+void INode::setLog(std::function<void(const std::string &, int32_t, const std::string &)> value) {
+  _log.swap(value);
+  if (_out) _out->setLog(&_log);
 }
 
-void INode::log(int32_t logLevel, const std::string& message)
-{
-	if(_log) _log(_id, logLevel, message);
+void INode::log(int32_t logLevel, const std::string &message) {
+  if (_log) _log(_id, logLevel, message);
 }
 
-void INode::frontendEventLog(const std::string& message)
-{
-    if(_frontendEventLog) _frontendEventLog(_id, message);
+void INode::frontendEventLog(const std::string &message) {
+  if (_frontendEventLog) _frontendEventLog(_id, message);
 }
 
-void INode::subscribePeer(uint64_t peerId, int32_t channel, const std::string& variable)
-{
-	if(_subscribePeer) _subscribePeer(_id, peerId, channel, variable);
+void INode::subscribePeer(uint64_t peerId, int32_t channel, const std::string &variable) {
+  if (_subscribePeer) _subscribePeer(_id, peerId, channel, variable);
 }
 
-void INode::unsubscribePeer(uint64_t peerId, int32_t channel, const std::string& variable)
-{
-	if(_unsubscribePeer) _unsubscribePeer(_id, peerId, channel, variable);
+void INode::unsubscribePeer(uint64_t peerId, int32_t channel, const std::string &variable) {
+  if (_unsubscribePeer) _unsubscribePeer(_id, peerId, channel, variable);
 }
 
-void INode::subscribeFlow()
-{
-    if(_subscribeFlow) _subscribeFlow(_id, _flowId);
+void INode::subscribeFlow() {
+  if (_subscribeFlow) _subscribeFlow(_id, _flowId);
 }
 
-void INode::unsubscribeFlow()
-{
-    if(_unsubscribeFlow) _unsubscribeFlow(_id, _flowId);
+void INode::unsubscribeFlow() {
+  if (_unsubscribeFlow) _unsubscribeFlow(_id, _flowId);
 }
 
-void INode::subscribeGlobal()
-{
-    if(_subscribeGlobal) _subscribeGlobal(_id);
+void INode::subscribeGlobal() {
+  if (_subscribeGlobal) _subscribeGlobal(_id);
 }
 
-void INode::unsubscribeGlobal()
-{
-    if(_unsubscribeGlobal) _unsubscribeGlobal(_id);
+void INode::unsubscribeGlobal() {
+  if (_unsubscribeGlobal) _unsubscribeGlobal(_id);
 }
 
-void INode::subscribeHomegearEvents()
-{
-    if(_subscribeHomegearEvents) _subscribeHomegearEvents(_id);
+void INode::subscribeHomegearEvents() {
+  if (_subscribeHomegearEvents) _subscribeHomegearEvents(_id);
 }
 
-void INode::unsubscribeHomegearEvents()
-{
-    if(_unsubscribeHomegearEvents) _unsubscribeHomegearEvents(_id);
+void INode::unsubscribeHomegearEvents() {
+  if (_unsubscribeHomegearEvents) _unsubscribeHomegearEvents(_id);
 }
 
-void INode::output(uint32_t index, PVariable message, bool synchronous)
-{
-	if(_output) _output(_id, index, std::move(message), synchronous);
+void INode::output(uint32_t index, PVariable message, bool synchronous) {
+  if (_output) _output(_id, index, std::move(message), synchronous);
 }
 
-PVariable INode::invoke(const std::string& methodName, PArray parameters)
-{
-	if(_invoke) return _invoke(methodName, std::move(parameters));
-	return Variable::createError(-32500, "No callback method set.");
+PVariable INode::invoke(const std::string &methodName, PArray parameters) {
+  if (_invoke) return _invoke(methodName, std::move(parameters));
+  return Variable::createError(-32500, "No callback method set.");
 }
 
-PVariable INode::invokeNodeMethod(const std::string& nodeId, const std::string& methodName, PArray parameters, bool wait)
-{
-	if(_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, std::move(parameters), wait);
-	return Variable::createError(-32500, "No callback method set.");
+PVariable INode::invokeNodeMethod(const std::string &nodeId, const std::string &methodName, PArray parameters, bool wait) {
+  if (_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, std::move(parameters), wait);
+  return Variable::createError(-32500, "No callback method set.");
 }
 
-PVariable INode::invokeLocal(const std::string& methodName, PArray parameters)
-{
-	std::map<std::string, std::function<PVariable(PArray parameters)>>::iterator localMethodIterator = _localRpcMethods.find(methodName);
-	if(localMethodIterator == _localRpcMethods.end())
-	{
-		_out->printError("Warning: RPC method not found: " + methodName);
-		return Variable::createError(-32601, ": Requested method not found.");
-	}
+PVariable INode::invokeLocal(const std::string &methodName, const PArray &parameters) {
+  auto localMethodIterator = _localRpcMethods.find(methodName);
+  if (localMethodIterator == _localRpcMethods.end()) {
+    _out->printError("Warning: RPC method not found: " + methodName);
+    return Variable::createError(-32601, ": Requested method not found.");
+  }
 
-	return localMethodIterator->second(parameters);
+  return localMethodIterator->second(parameters);
 }
 
-void INode::nodeEvent(const std::string& topic, PVariable value)
-{
-	if(_nodeEvent) _nodeEvent(_id, topic, std::move(value));
+void INode::nodeEvent(const std::string &topic, PVariable value) {
+  if (_nodeEvent) _nodeEvent(_id, topic, std::move(value));
 }
 
-PVariable INode::getNodeData(const std::string& key)
-{
-	if(_getNodeData) return _getNodeData(_id, key);
-	return Variable::createError(-32500, "No callback method set.");
+PVariable INode::getNodeData(const std::string &key) {
+  if (_getNodeData) return _getNodeData(_id, key);
+  return Variable::createError(-32500, "No callback method set.");
 }
 
-void INode::setNodeData(const std::string& key, PVariable value)
-{
-	if(_setNodeData) _setNodeData(_id, key, std::move(value));
+void INode::setNodeData(const std::string &key, PVariable value) {
+  if (_setNodeData) _setNodeData(_id, key, std::move(value));
 }
 
-PVariable INode::getFlowData(const std::string& key)
-{
-	if(_getFlowData) return _getFlowData(_flowId, key);
-	return Variable::createError(-32500, "No callback method set.");
+PVariable INode::getFlowData(const std::string &key) {
+  if (_getFlowData) return _getFlowData(_flowId, key);
+  return Variable::createError(-32500, "No callback method set.");
 }
 
-void INode::setFlowData(const std::string& key, PVariable value)
-{
-	if(_setFlowData) _setFlowData(_flowId, key, std::move(value));
+void INode::setFlowData(const std::string &key, PVariable value) {
+  if (_setFlowData) _setFlowData(_flowId, key, std::move(value));
 }
 
-PVariable INode::getGlobalData(const std::string& key)
-{
-	if(_getGlobalData) return _getGlobalData(key);
-	return Variable::createError(-32500, "No callback method set.");
+PVariable INode::getGlobalData(const std::string &key) {
+  if (_getGlobalData) return _getGlobalData(key);
+  return Variable::createError(-32500, "No callback method set.");
 }
 
-void INode::setGlobalData(const std::string& key, PVariable value)
-{
-	if(_setGlobalData) _setGlobalData(key, std::move(value));
+void INode::setGlobalData(const std::string &key, PVariable value) {
+  if (_setGlobalData) _setGlobalData(key, std::move(value));
 }
 
-void INode::setInternalMessage(PVariable message)
-{
-	if(_setInternalMessage) _setInternalMessage(_id, std::move(message));
+void INode::setInternalMessage(PVariable message) {
+  if (_setInternalMessage) _setInternalMessage(_id, std::move(message));
 }
 
-PVariable INode::getConfigParameter(const std::string& nodeId, const std::string& name)
-{
-	if(_getConfigParameter) return _getConfigParameter(nodeId, name);
-	return Variable::createError(-32500, "No callback method set.");
+PVariable INode::getConfigParameter(const std::string &nodeId, const std::string &name) {
+  if (_getConfigParameter) return _getConfigParameter(nodeId, name);
+  return Variable::createError(-32500, "No callback method set.");
 }
 
-PVariable INode::getNodeVariable(const std::string& variable)
-{
-    return Flows::PVariable();
+PVariable INode::getNodeVariable(const std::string &variable) {
+  return Flows::PVariable();
 }
 
-void INode::setNodeVariable(const std::string& variable, PVariable value)
-{
+void INode::setNodeVariable(const std::string &variable, const PVariable &value) {
 }
 
 }

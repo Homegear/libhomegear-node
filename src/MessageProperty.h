@@ -33,24 +33,22 @@
 
 #include "Variable.h"
 
-namespace Flows
-{
+namespace Flows {
 
 /**
  * Class to parse and work with Strings from frontend message property inputs.
  */
-class MessageProperty
-{
-private:
-    std::vector<std::pair<std::string, bool>> _property;
-public:
-    MessageProperty() = default;
-    explicit MessageProperty(const std::string& property);
+class MessageProperty {
+ private:
+  std::vector<std::pair<std::string, bool>> _property;
+ public:
+  MessageProperty() = default;
+  explicit MessageProperty(const std::string &property);
 
-    bool empty();
-    Flows::PVariable match(Flows::PVariable& message);
-    bool erase(Flows::PVariable& message);
-    bool set(Flows::PVariable& message, Flows::PVariable& value);
+  bool empty();
+  Flows::PVariable match(Flows::PVariable &message);
+  bool erase(Flows::PVariable &message);
+  bool set(Flows::PVariable &message, Flows::PVariable &value);
 };
 
 }

@@ -30,51 +30,42 @@
 
 #include "Output.h"
 
-namespace Flows
-{
+namespace Flows {
 
-Output::Output(std::string& nodeId, std::function<void(const std::string&, int32_t, const std::string&)>* logMethod)
-{
-	_nodeId = nodeId;
-	_log = logMethod;
+Output::Output(std::string &nodeId, std::function<void(const std::string &, int32_t, const std::string &)> *logMethod) {
+  _nodeId = nodeId;
+  _log = logMethod;
 }
 
-void Output::printEx(std::string file, uint32_t line, std::string function, std::string what)
-{
-	std::string error;
-	if(!what.empty()) error = "Error in file " + file + " line " + std::to_string(line) + " in function " + function + ": " + what;
-	else error = "Unknown error in file " + file + " line " + std::to_string(line) + " in function " + function + ".";
-	if(_log && *_log) (*_log)(_nodeId, 2, error);
+void Output::printEx(std::string file, uint32_t line, std::string function, std::string what) {
+  std::string error;
+  if (!what.empty()) error = "Error in file " + file + " line " + std::to_string(line) + " in function " + function + ": " + what;
+  else error = "Unknown error in file " + file + " line " + std::to_string(line) + " in function " + function + ".";
+  if (_log && *_log) (*_log)(_nodeId, 2, error);
 }
 
-void Output::printCritical(std::string errorString, bool errorCallback)
-{
-	if(_log && *_log) (*_log)(_nodeId, 1, errorString);
+void Output::printCritical(std::string errorString, bool errorCallback) {
+  if (_log && *_log) (*_log)(_nodeId, 1, errorString);
 }
 
-void Output::printError(std::string errorString)
-{
-	if(_log && *_log) (*_log)(_nodeId, 2, errorString);
+void Output::printError(std::string errorString) {
+  if (_log && *_log) (*_log)(_nodeId, 2, errorString);
 }
 
-void Output::printWarning(std::string errorString)
-{
-	if(_log && *_log) (*_log)(_nodeId, 3, errorString);
+void Output::printWarning(std::string errorString) {
+  if (_log && *_log) (*_log)(_nodeId, 3, errorString);
 }
 
-void Output::printInfo(std::string message)
-{
-	if(_log && *_log) (*_log)(_nodeId, 4, message);
+void Output::printInfo(std::string message) {
+  if (_log && *_log) (*_log)(_nodeId, 4, message);
 }
 
-void Output::printDebug(std::string message, int32_t minDebugLevel)
-{
-	if(_log && *_log) (*_log)(_nodeId, 5, message);
+void Output::printDebug(std::string message, int32_t minDebugLevel) {
+  if (_log && *_log) (*_log)(_nodeId, 5, message);
 }
 
-void Output::printMessage(std::string message, int32_t minDebugLevel)
-{
-	if(_log && *_log) (*_log)(_nodeId, minDebugLevel, message);
+void Output::printMessage(std::string message, int32_t minDebugLevel) {
+  if (_log && *_log) (*_log)(_nodeId, minDebugLevel, message);
 }
 
 }

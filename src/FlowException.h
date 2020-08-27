@@ -34,16 +34,14 @@
 #include <string>
 #include <stdexcept>
 
-namespace Flows
-{
+namespace Flows {
 /**
  * Base class for all Flow exceptions
  */
-class FlowException : public std::runtime_error
-{
-    public:
-        explicit FlowException(const std::string& message) : std::runtime_error(message) {};
-        virtual ~FlowException() = default;
+class FlowException : public std::runtime_error {
+ public:
+  explicit FlowException(const std::string &message) : std::runtime_error(message) {};
+  virtual ~FlowException() = default;
 };
 }
 #endif

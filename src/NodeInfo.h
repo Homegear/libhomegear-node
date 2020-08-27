@@ -33,32 +33,29 @@
 
 #include "Variable.h"
 
-namespace Flows
-{
+namespace Flows {
 
-struct Wire
-{
-	std::string id;
-	uint32_t port;
+struct Wire {
+  std::string id;
+  uint32_t port;
 };
 
-class NodeInfo
-{
-public:
-	std::string id;
-	std::string flowId;
-	std::string nodeNamespace;
-	std::string type;
-	PVariable info;
-	std::vector<std::vector<Wire>> wiresIn;
-	std::vector<std::vector<Wire>> wiresOut;
-	int64_t lastNodeEvent1 = 0;
-	int64_t lastNodeEvent2 = 0;
+class NodeInfo {
+ public:
+  std::string id;
+  std::string flowId;
+  std::string nodeNamespace;
+  std::string type;
+  PVariable info;
+  std::vector<std::vector<Wire>> wiresIn;
+  std::vector<std::vector<Wire>> wiresOut;
+  int64_t lastNodeEvent1 = 0;
+  int64_t lastNodeEvent2 = 0;
 
-	NodeInfo() {}
-	virtual ~NodeInfo() {}
-	PVariable serialize();
-protected:
+  NodeInfo() {}
+  virtual ~NodeInfo() {}
+  PVariable serialize();
+ protected:
 };
 
 typedef std::shared_ptr<NodeInfo> PNodeInfo;

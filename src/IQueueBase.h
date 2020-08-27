@@ -39,22 +39,20 @@
 #include <thread>
 #include <vector>
 
-namespace Flows
-{
-class IQueueBase
-{
-public:
-	IQueueBase(std::shared_ptr<Output>& output, uint32_t queueCount);
-	virtual ~IQueueBase() {}
+namespace Flows {
+class IQueueBase {
+ public:
+  IQueueBase(std::shared_ptr<Output> &output, uint32_t queueCount);
+  virtual ~IQueueBase() {}
 
-	void printQueueFullError(std::string message);
-protected:
-	std::shared_ptr<Output> _out;
-	int32_t _queueCount = 2;
-	std::unique_ptr<std::atomic_bool[]> _stopProcessingThread;
+  void printQueueFullError(std::string message);
+ protected:
+  std::shared_ptr<Output> _out;
+  int32_t _queueCount = 2;
+  std::unique_ptr<std::atomic_bool[]> _stopProcessingThread;
 
-	std::atomic<uint32_t> _droppedEntries;
-	std::atomic<int64_t> _lastQueueFullError;
+  std::atomic<uint32_t> _droppedEntries;
+  std::atomic<int64_t> _lastQueueFullError;
 };
 
 }

@@ -46,13 +46,12 @@ namespace Flows {
 
 class INode {
  public:
-  INode(const std::string &path, const std::string &nodeNamespace, const std::string &type, const std::atomic_bool *frontendConnected);
+  INode(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected);
   INode(const INode &) = delete;
   INode &operator=(const INode &) = delete;
   virtual ~INode();
 
   static std::string version();
-  std::string getNamespace() { return _namespace; }
   std::string getType() { return _type; }
   std::string getPath() { return _path; }
   std::string getFlowId() { return _flowId; }
@@ -167,10 +166,6 @@ class INode {
    */
   std::string _path;
 
-  /**
-   * The namespace of the node.
-   */
-  std::string _namespace;
   std::string _type;
 
   /**

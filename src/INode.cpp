@@ -36,10 +36,9 @@
 
 namespace Flows {
 
-INode::INode(const std::string &path, const std::string &nodeNamespace, const std::string &type, const std::atomic_bool *frontendConnected) {
+INode::INode(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected) {
   _out = std::make_shared<Output>(_id, nullptr); //_id is empty at this point and will be set through setId()
   _path = path;
-  _namespace = nodeNamespace;
   _type = type;
   _frontendConnected = frontendConnected;
 }

@@ -43,7 +43,7 @@ IQueueBase::IQueueBase(std::shared_ptr<Output> &output, uint32_t queueCount) {
   _droppedEntries = 0;
 }
 
-void IQueueBase::printQueueFullError(std::string message) {
+void IQueueBase::printQueueFullError(const std::string& message) {
   uint32_t droppedEntries = ++_droppedEntries;
   if (Flows::HelperFunctions::getTime() - _lastQueueFullError > 10000) {
     _lastQueueFullError = Flows::HelperFunctions::getTime();

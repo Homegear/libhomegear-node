@@ -55,7 +55,7 @@ INode::~INode() {
   _output = std::function<void(std::string, uint32_t, PVariable, bool)>();
   _invoke = std::function<PVariable(std::string, PArray)>();
   _invokeNodeMethod = std::function<PVariable(std::string, std::string, PArray, bool)>();
-  _nodeEvent = std::function<void(std::string, std::string, PVariable)>();
+  _nodeEvent = std::function<void(std::string, std::string, const PVariable &, bool)>();
   _getNodeData = std::function<PVariable(std::string, std::string)>();
   _setNodeData = std::function<void(std::string, std::string, PVariable)>();
   _getConfigParameter = std::function<PVariable(std::string, std::string)>();
@@ -134,8 +134,8 @@ PVariable INode::invokeLocal(const std::string &methodName, const PArray &parame
   return localMethodIterator->second(parameters);
 }
 
-void INode::nodeEvent(const std::string &topic, PVariable value) {
-  if (_nodeEvent) _nodeEvent(_id, topic, std::move(value));
+void INode::nodeEvent(const std::string &topic, const PVariable &value, bool retain) {
+  if (_nodeEvent) _nodeEvent(_id, topic, value, retain);
 }
 
 PVariable INode::getNodeData(const std::string &key) {

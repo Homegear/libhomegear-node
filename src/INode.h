@@ -134,7 +134,7 @@ class INode {
   void setOutput(std::function<void(const std::string &, uint32_t, PVariable, bool)> value) { _output.swap(value); }
   void setInvoke(std::function<PVariable(const std::string &, PArray)> value) { _invoke.swap(value); }
   void setInvokeNodeMethod(std::function<PVariable(const std::string &, const std::string &, PArray, bool)> value) { _invokeNodeMethod.swap(value); }
-  void setNodeEvent(std::function<void(const std::string &, const std::string &, PVariable)> value) { _nodeEvent.swap(value); }
+  void setNodeEvent(std::function<void(const std::string &, const std::string &, const PVariable &, bool)> value) { _nodeEvent.swap(value); }
   void setGetNodeData(std::function<PVariable(const std::string &, const std::string &)> value) { _getNodeData.swap(value); }
   void setSetNodeData(std::function<void(const std::string &, const std::string &, PVariable)> value) { _setNodeData.swap(value); }
   void setGetFlowData(std::function<PVariable(const std::string &, const std::string &)> value) { _getFlowData.swap(value); }
@@ -201,7 +201,7 @@ class INode {
   void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
   PVariable invoke(const std::string &methodName, PArray parameters);
   PVariable invokeNodeMethod(const std::string &nodeId, const std::string &methodName, PArray parameters, bool);
-  void nodeEvent(const std::string &topic, PVariable value);
+  void nodeEvent(const std::string &topic, const PVariable &value, bool retain);
   PVariable getNodeData(const std::string &key);
   void setNodeData(const std::string &key, PVariable value);
   PVariable getFlowData(const std::string &key);
@@ -227,7 +227,7 @@ class INode {
   std::function<void(const std::string &, uint32_t, PVariable, bool)> _output;
   std::function<PVariable(const std::string &, PArray)> _invoke;
   std::function<PVariable(const std::string &, const std::string &, PArray, bool)> _invokeNodeMethod;
-  std::function<void(const std::string &, const std::string &, PVariable)> _nodeEvent;
+  std::function<void(const std::string &, const std::string &, const PVariable &, bool)> _nodeEvent;
   std::function<PVariable(const std::string &, const std::string &)> _getNodeData;
   std::function<void(const std::string &, const std::string &, PVariable)> _setNodeData;
   std::function<PVariable(const std::string &, const std::string &)> _getFlowData;

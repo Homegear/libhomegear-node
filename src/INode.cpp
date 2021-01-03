@@ -110,6 +110,22 @@ void INode::unsubscribeHomegearEvents() {
   if (_unsubscribeHomegearEvents) _unsubscribeHomegearEvents(_id);
 }
 
+void INode::subscribeStatusEvents() {
+  if (_subscribeStatusEvents) _subscribeStatusEvents(_id);
+}
+
+void INode::unsubscribeStatusEvents() {
+  if (_unsubscribeStatusEvents) _unsubscribeStatusEvents(_id);
+}
+
+void INode::subscribeErrorEvents() {
+  if (_subscribeErrorEvents) _subscribeErrorEvents(_id);
+}
+
+void INode::unsubscribeErrorEvents() {
+  if (_unsubscribeErrorEvents) _unsubscribeErrorEvents(_id);
+}
+
 void INode::output(uint32_t index, PVariable message, bool synchronous) {
   if (_output) _output(_id, index, std::move(message), synchronous);
 }

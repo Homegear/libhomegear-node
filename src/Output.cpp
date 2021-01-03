@@ -37,34 +37,34 @@ Output::Output(std::string &nodeId, std::function<void(const std::string &, int3
   _log = logMethod;
 }
 
-void Output::printEx(std::string file, uint32_t line, std::string function, std::string what) {
+void Output::printEx(const std::string& file, uint32_t line, const std::string& function, const std::string& what) {
   std::string error;
   if (!what.empty()) error = "Error in file " + file + " line " + std::to_string(line) + " in function " + function + ": " + what;
   else error = "Unknown error in file " + file + " line " + std::to_string(line) + " in function " + function + ".";
   if (_log && *_log) (*_log)(_nodeId, 2, error);
 }
 
-void Output::printCritical(std::string errorString, bool errorCallback) {
+void Output::printCritical(const std::string& errorString, bool errorCallback) {
   if (_log && *_log) (*_log)(_nodeId, 1, errorString);
 }
 
-void Output::printError(std::string errorString) {
+void Output::printError(const std::string& errorString) {
   if (_log && *_log) (*_log)(_nodeId, 2, errorString);
 }
 
-void Output::printWarning(std::string errorString) {
+void Output::printWarning(const std::string& errorString) {
   if (_log && *_log) (*_log)(_nodeId, 3, errorString);
 }
 
-void Output::printInfo(std::string message) {
+void Output::printInfo(const std::string& message) {
   if (_log && *_log) (*_log)(_nodeId, 4, message);
 }
 
-void Output::printDebug(std::string message, int32_t minDebugLevel) {
+void Output::printDebug(const std::string& message, int32_t minDebugLevel) {
   if (_log && *_log) (*_log)(_nodeId, 5, message);
 }
 
-void Output::printMessage(std::string message, int32_t minDebugLevel) {
+void Output::printMessage(const std::string& message, int32_t minDebugLevel) {
   if (_log && *_log) (*_log)(_nodeId, minDebugLevel, message);
 }
 

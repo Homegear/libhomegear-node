@@ -57,10 +57,12 @@ class INode {
   std::string getFlowId() { return _flowId; }
   void setFlowId(const std::string &value) { _flowId = value; }
   std::string getId() { return _id; }
-  void setId(std::string value) {
+  void setId(const std::string &value) {
     _id = value;
     if (_out) _out->setNodeId(value);
   }
+  std::string getName() { return _name; }
+  void setName(const std::string &value) { _name = value; }
   std::mutex &getInputMutex() { return _inputMutex; }
 
   virtual bool init(const PNodeInfo &nodeInfo) { return true; };
@@ -109,6 +111,17 @@ class INode {
   /**
    * Mustn't block.
    */
+  virtual void statusEvent(const std::string &nodeId, const PVariable &status) {}
+
+  /**
+   * Mustn't block.
+   * @return Must return "true" when the event is handled and shouldn't be displayed in the debug sidebar.
+   */
+  virtual bool errorEvent(const std::string &nodeId, int32_t level, const PVariable &error) { return false; }
+
+  /**
+   * Mustn't block.
+   */
   virtual PVariable getNodeVariable(const std::string &variable);
 
   /**
@@ -131,6 +144,10 @@ class INode {
   void setUnsubscribeGlobal(std::function<void(const std::string &)> value) { _unsubscribeGlobal.swap(value); }
   void setSubscribeHomegearEvents(std::function<void(const std::string &)> value) { _subscribeHomegearEvents.swap(value); }
   void setUnsubscribeHomegearEvents(std::function<void(const std::string &)> value) { _unsubscribeHomegearEvents.swap(value); }
+  void setSubscribeStatusEvents(std::function<void(const std::string &)> value) { _subscribeStatusEvents.swap(value); }
+  void setUnsubscribeStatusEvents(std::function<void(const std::string &)> value) { _unsubscribeStatusEvents.swap(value); }
+  void setSubscribeErrorEvents(std::function<void(const std::string &)> value) { _subscribeErrorEvents.swap(value); }
+  void setUnsubscribeErrorEvents(std::function<void(const std::string &)> value) { _unsubscribeErrorEvents.swap(value); }
   void setOutput(std::function<void(const std::string &, uint32_t, PVariable, bool)> value) { _output.swap(value); }
   void setInvoke(std::function<PVariable(const std::string &, PArray)> value) { _invoke.swap(value); }
   void setInvokeNodeMethod(std::function<PVariable(const std::string &, const std::string &, PArray, bool)> value) { _invokeNodeMethod.swap(value); }
@@ -179,6 +196,11 @@ class INode {
   std::string _id;
 
   /**
+   * The name of the node.
+   */
+  std::string _name;
+
+  /**
    * True when a Node-BLUE frontend is currently connected to Homegear.
    */
   const std::atomic_bool *_frontendConnected;
@@ -198,6 +220,10 @@ class INode {
   void unsubscribeGlobal();
   void subscribeHomegearEvents();
   void unsubscribeHomegearEvents();
+  void subscribeStatusEvents();
+  void unsubscribeStatusEvents();
+  void subscribeErrorEvents();
+  void unsubscribeErrorEvents();
   void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
   PVariable invoke(const std::string &methodName, PArray parameters);
   PVariable invokeNodeMethod(const std::string &nodeId, const std::string &methodName, PArray parameters, bool);
@@ -224,6 +250,10 @@ class INode {
   std::function<void(const std::string &)> _unsubscribeGlobal;
   std::function<void(const std::string &)> _subscribeHomegearEvents;
   std::function<void(const std::string &)> _unsubscribeHomegearEvents;
+  std::function<void(const std::string &)> _subscribeStatusEvents;
+  std::function<void(const std::string &)> _unsubscribeStatusEvents;
+  std::function<void(const std::string &)> _subscribeErrorEvents;
+  std::function<void(const std::string &)> _unsubscribeErrorEvents;
   std::function<void(const std::string &, uint32_t, PVariable, bool)> _output;
   std::function<PVariable(const std::string &, PArray)> _invoke;
   std::function<PVariable(const std::string &, const std::string &, PArray, bool)> _invokeNodeMethod;

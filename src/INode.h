@@ -146,7 +146,7 @@ class INode {
   void setUnsubscribeHomegearEvents(std::function<void(const std::string &)> value) { _unsubscribeHomegearEvents.swap(value); }
   void setSubscribeStatusEvents(std::function<void(const std::string &)> value) { _subscribeStatusEvents.swap(value); }
   void setUnsubscribeStatusEvents(std::function<void(const std::string &)> value) { _unsubscribeStatusEvents.swap(value); }
-  void setSubscribeErrorEvents(std::function<void(const std::string &)> value) { _subscribeErrorEvents.swap(value); }
+  void setSubscribeErrorEvents(std::function<void(const std::string &, bool, bool, bool)> value) { _subscribeErrorEvents.swap(value); }
   void setUnsubscribeErrorEvents(std::function<void(const std::string &)> value) { _unsubscribeErrorEvents.swap(value); }
   void setOutput(std::function<void(const std::string &, uint32_t, PVariable, bool)> value) { _output.swap(value); }
   void setInvoke(std::function<PVariable(const std::string &, PArray)> value) { _invoke.swap(value); }
@@ -222,7 +222,7 @@ class INode {
   void unsubscribeHomegearEvents();
   void subscribeStatusEvents();
   void unsubscribeStatusEvents();
-  void subscribeErrorEvents();
+  void subscribeErrorEvents(bool catchConfigurationNodeErrors, bool hasScope, bool ignoreCaught);
   void unsubscribeErrorEvents();
   void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
   PVariable invoke(const std::string &methodName, PArray parameters);
@@ -252,7 +252,7 @@ class INode {
   std::function<void(const std::string &)> _unsubscribeHomegearEvents;
   std::function<void(const std::string &)> _subscribeStatusEvents;
   std::function<void(const std::string &)> _unsubscribeStatusEvents;
-  std::function<void(const std::string &)> _subscribeErrorEvents;
+  std::function<void(const std::string &, bool, bool, bool)> _subscribeErrorEvents;
   std::function<void(const std::string &)> _unsubscribeErrorEvents;
   std::function<void(const std::string &, uint32_t, PVariable, bool)> _output;
   std::function<PVariable(const std::string &, PArray)> _invoke;

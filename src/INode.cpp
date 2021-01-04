@@ -118,8 +118,8 @@ void INode::unsubscribeStatusEvents() {
   if (_unsubscribeStatusEvents) _unsubscribeStatusEvents(_id);
 }
 
-void INode::subscribeErrorEvents() {
-  if (_subscribeErrorEvents) _subscribeErrorEvents(_id);
+void INode::subscribeErrorEvents(bool catchConfigurationNodeErrors, bool hasScope, bool ignoreCaught) {
+  if (_subscribeErrorEvents) _subscribeErrorEvents(_id, catchConfigurationNodeErrors, hasScope, ignoreCaught);
 }
 
 void INode::unsubscribeErrorEvents() {

@@ -36,7 +36,7 @@ namespace Flows {
 JsonEncoder::JsonEncoder() {
 }
 
-std::string JsonEncoder::getString(const PVariable variable) {
+std::string JsonEncoder::getString(const PVariable &variable) {
   if (!variable) return "";
   std::ostringstream s;
   switch (variable->type) {
@@ -52,7 +52,7 @@ std::string JsonEncoder::getString(const PVariable variable) {
   return s.str();
 }
 
-std::vector<char> JsonEncoder::getVector(const PVariable variable) {
+std::vector<char> JsonEncoder::getVector(const PVariable &variable) {
   std::vector<char> json;
   if (!variable) return json;
   json.reserve(1024);

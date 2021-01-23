@@ -49,7 +49,7 @@ class JsonDecoderException : public FlowException {
 class JsonDecoder {
  public:
   JsonDecoder() = default;
-  virtual ~JsonDecoder() = default;
+  ~JsonDecoder() = default;
 
   static PVariable decode(const std::string &json);
   static PVariable decode(const std::string &json, uint32_t &bytesRead);

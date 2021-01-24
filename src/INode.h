@@ -224,17 +224,17 @@ class INode {
   void unsubscribeStatusEvents();
   void subscribeErrorEvents(bool catchConfigurationNodeErrors, bool hasScope, bool ignoreCaught);
   void unsubscribeErrorEvents();
-  void output(uint32_t outputIndex, PVariable message, bool synchronous = false);
-  PVariable invoke(const std::string &methodName, PArray parameters);
-  PVariable invokeNodeMethod(const std::string &nodeId, const std::string &methodName, PArray parameters, bool);
+  void output(uint32_t outputIndex, const PVariable &message, bool synchronous = false);
+  PVariable invoke(const std::string &methodName, const PArray &parameters);
+  PVariable invokeNodeMethod(const std::string &nodeId, const std::string &methodName, const PArray &parameters, bool wait);
   void nodeEvent(const std::string &topic, const PVariable &value, bool retain);
   PVariable getNodeData(const std::string &key);
-  void setNodeData(const std::string &key, PVariable value);
+  void setNodeData(const std::string &key, const PVariable &value);
   PVariable getFlowData(const std::string &key);
-  void setFlowData(const std::string &key, PVariable value);
+  void setFlowData(const std::string &key, const PVariable &value);
   PVariable getGlobalData(const std::string &key);
-  void setGlobalData(const std::string &key, PVariable value);
-  void setInternalMessage(PVariable message);
+  void setGlobalData(const std::string &key, const PVariable &value);
+  void setInternalMessage(const PVariable &message);
   PVariable getConfigParameter(const std::string &nodeId, const std::string &name);
  private:
   std::atomic_bool _locked{false};

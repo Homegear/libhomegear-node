@@ -126,17 +126,17 @@ void INode::unsubscribeErrorEvents() {
   if (_unsubscribeErrorEvents) _unsubscribeErrorEvents(_id);
 }
 
-void INode::output(uint32_t index, PVariable message, bool synchronous) {
-  if (_output) _output(_id, index, std::move(message), synchronous);
+void INode::output(uint32_t index, const PVariable &message, bool synchronous) {
+  if (_output) _output(_id, index, message, synchronous);
 }
 
-PVariable INode::invoke(const std::string &methodName, PArray parameters) {
-  if (_invoke) return _invoke(methodName, std::move(parameters));
+PVariable INode::invoke(const std::string &methodName, const PArray &parameters) {
+  if (_invoke) return _invoke(methodName, parameters);
   return Variable::createError(-32500, "No callback method set.");
 }
 
-PVariable INode::invokeNodeMethod(const std::string &nodeId, const std::string &methodName, PArray parameters, bool wait) {
-  if (_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, std::move(parameters), wait);
+PVariable INode::invokeNodeMethod(const std::string &nodeId, const std::string &methodName, const PArray &parameters, bool wait) {
+  if (_invokeNodeMethod) return _invokeNodeMethod(nodeId, methodName, parameters, wait);
   return Variable::createError(-32500, "No callback method set.");
 }
 
@@ -159,8 +159,8 @@ PVariable INode::getNodeData(const std::string &key) {
   return Variable::createError(-32500, "No callback method set.");
 }
 
-void INode::setNodeData(const std::string &key, PVariable value) {
-  if (_setNodeData) _setNodeData(_id, key, std::move(value));
+void INode::setNodeData(const std::string &key, const PVariable &value) {
+  if (_setNodeData) _setNodeData(_id, key, value);
 }
 
 PVariable INode::getFlowData(const std::string &key) {
@@ -168,8 +168,8 @@ PVariable INode::getFlowData(const std::string &key) {
   return Variable::createError(-32500, "No callback method set.");
 }
 
-void INode::setFlowData(const std::string &key, PVariable value) {
-  if (_setFlowData) _setFlowData(_flowId, key, std::move(value));
+void INode::setFlowData(const std::string &key, const PVariable &value) {
+  if (_setFlowData) _setFlowData(_flowId, key, value);
 }
 
 PVariable INode::getGlobalData(const std::string &key) {
@@ -177,12 +177,12 @@ PVariable INode::getGlobalData(const std::string &key) {
   return Variable::createError(-32500, "No callback method set.");
 }
 
-void INode::setGlobalData(const std::string &key, PVariable value) {
-  if (_setGlobalData) _setGlobalData(key, std::move(value));
+void INode::setGlobalData(const std::string &key, const PVariable &value) {
+  if (_setGlobalData) _setGlobalData(key, value);
 }
 
-void INode::setInternalMessage(PVariable message) {
-  if (_setInternalMessage) _setInternalMessage(_id, std::move(message));
+void INode::setInternalMessage(const PVariable &message) {
+  if (_setInternalMessage) _setInternalMessage(_id, message);
 }
 
 PVariable INode::getConfigParameter(const std::string &nodeId, const std::string &name) {

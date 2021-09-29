@@ -44,7 +44,7 @@ class NodeFactory {
   virtual ~NodeFactory() {
   }
 
-  virtual INode *createNode(const std::string &path, const std::string &nodeNamespace, const std::string &type, const std::atomic_bool *frontendConnected) = 0;
+  virtual INode *createNode(const std::string &path, const std::string &type, const std::atomic_bool *frontendConnected) = 0;
 };
 
 }

@@ -59,7 +59,7 @@ class Output {
    *
    * @param value The new node ID.
    */
-  void setNodeId(std::string &value) { _nodeId = value; }
+  void setNodeId(const std::string &value) { _nodeId = value; }
 
   /**
    * Sets _log.
@@ -76,7 +76,7 @@ class Output {
    * @param function The function name where the error occured.
    * @param what The error message.
    */
-  void printEx(std::string file, uint32_t line, std::string function, std::string what = "");
+  void printEx(const std::string& file, uint32_t line, const std::string& function, const std::string& what = "");
 
   /**
    * Prints a critical error message (debug level < 1).
@@ -89,7 +89,7 @@ class Output {
    * @param errorString The error message.
    * @param errorCallback If set to false, the error will not be send to RPC event servers (default true)
    */
-  void printCritical(std::string errorString, bool errorCallback = true);
+  void printCritical(const std::string& errorString, bool errorCallback = true);
 
   /**
    * Prints an error message (debug level < 2).
@@ -101,7 +101,7 @@ class Output {
    * @see printMessage()
    * @param errorString The error message.
    */
-  void printError(std::string errorString);
+  void printError(const std::string& errorString);
 
   /**
    * Prints a warning message (debug level < 3).
@@ -113,7 +113,7 @@ class Output {
    * @see printMessage()
    * @param errorString The warning message.
    */
-  void printWarning(std::string errorString);
+  void printWarning(const std::string& errorString);
 
   /**
    * Prints a info message (debug level < 4).
@@ -125,7 +125,7 @@ class Output {
    * @see printMessage()
    * @param message The message.
    */
-  void printInfo(std::string message);
+  void printInfo(const std::string& message);
 
   /**
    * Prints a debug message (debug level < 5).
@@ -138,7 +138,7 @@ class Output {
    * @param message The message.
    * @param minDebugLevel The minimal debug level (default 5).
    */
-  void printDebug(std::string message, int32_t minDebugLevel = 5);
+  void printDebug(const std::string& message, int32_t minDebugLevel = 5);
 
   /**
    * Prints a message regardless of the current debug level.
@@ -151,7 +151,7 @@ class Output {
    * @param message The message.
    * @param minDebugLevel The minimal debug level (default 0).
    */
-  void printMessage(std::string message, int32_t minDebugLevel = 0);
+  void printMessage(const std::string& message, int32_t minDebugLevel = 0);
 
   /**
    * Calls the error callback function registered with the constructor.

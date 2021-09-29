@@ -45,7 +45,7 @@ class IQueueBase {
   IQueueBase(std::shared_ptr<Output> &output, uint32_t queueCount);
   virtual ~IQueueBase() {}
 
-  void printQueueFullError(std::string message);
+  void printQueueFullError(const std::string& message);
  protected:
   std::shared_ptr<Output> _out;
   int32_t _queueCount = 2;

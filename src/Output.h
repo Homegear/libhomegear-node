@@ -35,6 +35,7 @@
 #include <sstream>
 #include <functional>
 #include <iomanip>
+#include <cstdint>
 
 namespace Flows {
 /**

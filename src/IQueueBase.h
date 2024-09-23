@@ -38,6 +38,7 @@
 #include <condition_variable>
 #include <thread>
 #include <vector>
+#include <cstdint>
 
 namespace Flows {
 class IQueueBase {

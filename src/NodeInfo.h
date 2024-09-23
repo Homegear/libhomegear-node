@@ -50,9 +50,10 @@ class NodeInfo {
   std::vector<std::vector<Wire>> wiresOut;
   int64_t lastNodeEvent1 = 0;
   int64_t lastNodeEvent2 = 0;
+  std::vector<uint32_t> processingTimes;
 
-  NodeInfo() {}
-  virtual ~NodeInfo() {}
+  NodeInfo() = default;
+  virtual ~NodeInfo() = default;
   PVariable serialize();
  protected:
 };

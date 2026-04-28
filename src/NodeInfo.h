@@ -31,6 +31,8 @@
 #ifndef NODEINFO_H_
 #define NODEINFO_H_
 
+#include <cstdint>
+
 #include "Variable.h"
 
 namespace Flows {

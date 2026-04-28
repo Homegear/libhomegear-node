@@ -31,6 +31,8 @@
 #ifndef FLOWSIQUEUE_H_
 #define FLOWSIQUEUE_H_
 
+#include <cstdint>
+
 #include "IQueueBase.h"
 
 #include <vector>

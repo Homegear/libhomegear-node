@@ -31,6 +31,8 @@
 #ifndef NODEVARIABLE_H_
 #define NODEVARIABLE_H_
 
+#include <cstdint>
+
 #include <vector>
 #include <string>
 #include <memory>

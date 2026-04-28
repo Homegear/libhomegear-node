@@ -31,6 +31,8 @@
 #ifndef FLOWSBINARYRPC_H_
 #define FLOWSBINARYRPC_H_
 
+#include <cstdint>
+
 #include "Variable.h"
 #include "FlowException.h"
 

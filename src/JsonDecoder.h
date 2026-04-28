@@ -31,6 +31,8 @@
 #ifndef NODEJSONDECODER_H_
 #define NODEJSONDECODER_H_
 
+#include <cstdint>
+
 #include "FlowException.h"
 #include "Variable.h"
 #include "Math.h"

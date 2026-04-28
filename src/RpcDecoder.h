@@ -31,6 +31,8 @@
 #ifndef FLOWSRPCDECODER_H_
 #define FLOWSRPCDECODER_H_
 
+#include <cstdint>
+
 #include "Variable.h"
 #include "BinaryDecoder.h"
 #include "RpcHeader.h"

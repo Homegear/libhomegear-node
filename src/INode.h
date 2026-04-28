@@ -31,6 +31,8 @@
 #ifndef INODE_H_
 #define INODE_H_
 
+#include <cstdint>
+
 #include "Variable.h"
 #include "NodeInfo.h"
 #include "Output.h"

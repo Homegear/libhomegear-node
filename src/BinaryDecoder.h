@@ -31,6 +31,8 @@
 #ifndef FLOWSBINARYDECODER_H_
 #define FLOWSBINARYDECODER_H_
 
+#include <cstdint>
+
 #include <iostream>
 #include <memory>
 #include <cstring>
